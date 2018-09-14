@@ -1,0 +1,17 @@
+simp_sec_quant: SIMPLIFICATOR FOR SECOND-QUANTIZATION EXPRESSIONS
+
+The simp_sec_quant.py file contains a set of classes (objects) that allows 
+to construct second quantization expressions with a Fock operator
+and a fluctuation potential and spin-free molecular orbitals (closed-shell).
+
+The created expressions are similar to the one derived in Chapter 13 
+of the Molecular electronic structure theory book by Helgaker.
+
+The expressions can then be simplified to expressions that can be implemented
+in standard quantum chemistry packages.
+
+The expression.py script contains examples of utilization.
+
+TODO: 
+   - add triple and quadruple permutations
+   - add inner product with doubly excited determinant

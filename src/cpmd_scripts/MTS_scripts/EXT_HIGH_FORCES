@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# get environment ready for turbomole
+source /software/ENV/modules
+module purge
+module load turbomole/7.1.1
+
+export PARA_ARCH=SMP
+export PATH=$TURBODIR/bin/em64t-unknown-linux-gnu_smp:$PATH
+export PARNODES=22
+
+
+JOB='DFT'
+TITLE='TURBOMOLE DFT/PBE/aug-cc-pVDZ calculation'
+D='define.inp'
+G='geometry.xyz'
+F='forces.xyz'
+
+# turbo_call.py is assumed on PATH
+turbo_call.py $JOB $TITLE --GEO_XYZ=$G --DEF_INP=$D --FORCES_XYZ=$F

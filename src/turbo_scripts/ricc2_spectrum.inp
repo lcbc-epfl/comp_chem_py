@@ -1,0 +1,31 @@
+
+
+a coord
+*
+no
+b all aug-cc-pVDZ
+b "h" cc-pVDZ
+*
+eht
+y
+0
+y
+scf
+iter
+100
+
+cc
+freeze core
+*
+cbas
+*
+memory 5000
+ricc2
+cc2
+*
+exci
+irrep=a nexc=5
+spectrum states=all
+*
+*
+*

@@ -1,0 +1,28 @@
+
+TDDFT/TDA/PBE grad on state 2, charge +1 cc-pVDZ
+a coord
+*
+no
+b all cc-pVDZ
+*
+eht
+y
+0
+y
+scf
+iter
+100
+
+dft
+on
+func pbe
+*
+ex
+ciss
+*
+a 2
+*
+*
+y
+*
+

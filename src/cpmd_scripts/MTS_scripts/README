@@ -1,0 +1,20 @@
+This directory contains the script files required to run MTS in CPMD 
+in combination with TURBOMOLE.
+
+The EXT_HIGH_FORCES and EXT_LOW_FORCES files are the ones called by CPMD. 
+   EXT_HIGH_FORCES would be called to get high level forces from TURBOMOLE.
+   EXT_LOW_FORCES would be called to get low level forces from TURBOMOLE.
+
+Every parameter that is specific to the current run is defined inside 
+the EXT_***_FORCES scripts. Except the input file to the define program 
+which is used to create the control file (input to TURBOMOLE).
+
+The turbo_call script is then called and takes care of running TURBOMOLE
+depending on the parameters set in the EXT_***_FORCES scripts.
+
+If everything runs smoothly, turbo_call will produce a file with the 
+nuclear forces that will be read by CPMD. 
+
+Else a file EXT.error should be produced and tell CPMD to quit
+with a meaningful error statement.
+

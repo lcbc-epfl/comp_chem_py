@@ -1,0 +1,30 @@
+
+
+a coord
+*
+no
+b all cc-pVDZ
+*
+eht
+y
+0
+y
+scf
+iter
+100
+
+cc
+freeze
+*
+cbas
+*
+memory 5000
+ricc2
+mp2
+geoopt mp2 0
+*
+*
+*
+
+
+

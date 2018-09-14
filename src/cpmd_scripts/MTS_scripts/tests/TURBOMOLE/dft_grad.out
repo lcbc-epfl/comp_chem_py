@@ -1,0 +1,218 @@
+ operating system is UNIX !
+ hostname is lcbcpc78
+           SMPCPUS    set: Shared-memory Parallelization with  22 CPUs.
+
+           SMP Parallelization Reference:
+           C. van Wullen, J. Comput. Chem. 32 (2011) 1195--1201
+
+ grad (lcbcpc78) : TURBOMOLE V7.1 ( 20661 ) 10 Jun 2016 at 08:56:48
+ Copyright (C) 2016 TURBOMOLE GmbH, Karlsruhe
+
+
+    2018-06-07 15:59:44.049 
+
+
+
+                             g r a d - program
+
+                reinhart ahlrichs, hans horn & ansgar schaefer
+                 density functional version : oliver treutler
+
+
+                          quantum chemistry group
+                          universitaet  karlsruhe
+                                   germany
+
+
+
+
+                                                 
+                                 References:     
+                                                 
+          Density Functional:                              
+              O. Treutler and R. Ahlrichs                      
+              Efficient Molecular Numerical Integration Schemes
+              J. chem. Phys. 102: 346 (1995)                   
+          Parallel Version:                                
+              Performance of parallel TURBOMOLE for Density    
+              Functional Calculations                          
+              M. v.Arnim and R. Ahlrichs                      
+              J. comp. Chem. 19: 1746 (1998)                   
+                                         
+
+
+
+
+              +--------------------------------------------------+
+              | Atomic coordinate, charge and isotop information |
+              +--------------------------------------------------+
+
+                    atomic coordinates            atom    charge  isotop
+         11.25777196   14.56520465   14.13428415    o      8.000     0
+         16.92694484   13.78789387   14.22387328    o      8.000     0
+         13.06867200   14.38283420   14.09506881    h      1.000     0
+         10.85848592   15.83734893   12.91071739    h      1.000     0
+         17.53984131   12.15680312   13.72370240    h      1.000     0
+         17.78310138   14.20040930   15.76760744    h      1.000     0
+ 
+       center of nuclear mass  :   14.17294600   14.17294600   14.17294600
+       center of nuclear charge:   14.23639175   14.17010919   14.16811777
+
+              +--------------------------------------------------+
+              |               basis set information              |
+              +--------------------------------------------------+
+
+              we will work with the 1s 3p 5d 7f 9g ... basis set
+              ...i.e. with spherical basis functions...
+
+   type   atoms  prim   cont   basis
+   ---------------------------------------------------------------------------
+    o        2     34     14   cc-pVDZ   [3s2p1d|17s4p1d]
+    h        4      7      5   cc-pVDZ   [2s1p|4s1p]
+   ---------------------------------------------------------------------------
+   total:    6     96     48
+   ---------------------------------------------------------------------------
+
+   total number of primitive shells          :   27
+   total number of contracted shells         :   24
+   total number of cartesian basis functions :   50
+   total number of SCF-basis functions       :   48
+
+
+ integral neglect threshold       :  0.67E-10
+ integral storage threshold THIZE :  0.10E-04
+ integral storage threshold THIME :         5
+
+
+ symmetry group of the molecule :   c1 
+
+ the group has the following generators :
+   c1(z)
+
+    1 symmetry operations found
+
+ there are 1 real representations :   a   
+
+ maximum number of shells which are related by symmetry :  1
+
+
+    mo occupation :
+   irrep   mo's   occupied
+    a       48       10
+ 
+ number of basis functions   :           48
+ number of occupied orbitals :           10
+ 
+
+ number of off-diagonal lagrangians expected :  0
+  MOs are in ASCII format !
+
+
+ reading orbital data $scfmo  from file mos
+ orbital characterization : scfconv=7
+ time elapsed for calculating density matrices :   0.000 sec
+
+  grad preliminaries : cpu elapsed         0.024 s
+                       wall                0.076 s
+
+
+
+                    and now featuring
+                             the super-duper gradient    ..... wow .....
+
+
+ ------------------------------------------------------------------------------
+
+            SCF ENERGY GRADIENT with respect to NUCLEAR COORDINATES            
+
+ ------------------------------------------------------------------------------
+
+
+
+    ----------------------------------------
+     S+T+V CONTRIBUTIONS TO ENERGY GRADIENT 
+    ----------------------------------------
+
+ 1e-integral 1st. derivatives will be neglected if expon. factor < 0.100000E-10
+
+
+  .... end of 1e gradient ....
+  cpu time for 1e-part of gradient :      0.02 sec
+
+
+    -----------------------------------------------
+     TWO ELECTRON CONTRIBUTIONS TO ENERGY GRADIENT 
+    -----------------------------------------------
+
+ biggest 1-particle AO density matrix element is expected to be    2.0040369753
+
+ core memory to be involved in 2e-gradient :
+   symmetry shell pair data              :         1
+   one and two particle density          :      2871
+   derivative integrals                  :      8496
+   ij-primitive data                     :       576
+   derivative integral bound             :       900
+   totally                               :     12843
+
+
+ setting up bound for integral derivative estimation
+
+ increment for numerical differentiation : 0.00050000
+
+ biggest AO integral is expected to be     4.738267915
+ biggest cartesian 1st derivative AO integral is expected to be     8.615610780
+
+ 2e-integral 1st. derivatives will be neglected if expon. factor < 0.100000E-06
+ outer boundary for 2e-integral derivative neglection is 0.414990E-08
+
+
+  .... end of 2e gradient ....
+  cpu time for 2e-part of gradient :      0.00 min
+
+
+          ------------------------------------------------
+           cartesian gradient of the energy (hartree/bohr)
+          ------------------------------------------------
+
+  ATOM      1 o           2 o           3 h           4 h           5 h 
+dE/dx -0.8662118D-02 -0.8668130D-02  0.1405607D-01 -0.6209265D-02  0.3658590D-02
+dE/dy -0.6150875D-02  0.6695204D-02 -0.3035841D-02  0.9597566D-02 -0.1266930D-01
+dE/dz  0.7213110D-02 -0.5666479D-02  0.1316114D-02 -0.8839742D-02 -0.6128941D-02
+
+  ATOM      6 h 
+dE/dx  0.5824859D-02
+dE/dy  0.5563244D-02
+dE/dz  0.1210594D-01
+ 
+ resulting FORCE  (fx,fy,fz) = (-.106D-09,0.970D-11,-.156D-11)
+ resulting MOMENT (mx,my,mz) = (-.372D-07,-.972D-07,-.159D-07)
+
+
+ exx =       0.039785 eyy =       0.036042 ezz =       0.032546
+ eyz =       0.003264 exz =       0.014281 exy =      -0.014661
+
+
+ **********************************************************************
+  |maximum component of gradient| : 0.14056065E-01  (atom  3 h )       
+   gradient norm                  : 0.34017483E-01
+ **********************************************************************
+
+ <getgrd> : data group $grad  is missing 
+
+   ***  cartesian gradients written onto <gradient>  ***
+
+
+     --- calculation of the energy gradient finished ---
+
+
+
+    ------------------------------------------------------------------------
+         total  cpu-time :   0.34 seconds
+         total wall-time :   0.30 seconds
+    ------------------------------------------------------------------------
+
+   ****  grad : all done  ****
+
+
+    2018-06-07 15:59:44.341 
+

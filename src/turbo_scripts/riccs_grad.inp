@@ -1,0 +1,31 @@
+
+
+a coord
+*
+no
+b all aug-cc-pVDZ
+*
+eht
+y
+0
+y
+scf
+iter
+100
+
+cc
+freeze core
+*
+cbas
+*
+memory 5000
+ricc2
+ccs
+*
+exci
+irrep=a nexc=2
+exprop states=all operators=diplen,qudlen
+xgrad states=(a 2)
+*
+*
+*
