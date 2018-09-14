@@ -1,0 +1,4 @@
+[submodule "external/ebsel"]
+	path = external/ebsel
+	url = https://github.com/mattbernst/ebsel.git
+	branch = master
