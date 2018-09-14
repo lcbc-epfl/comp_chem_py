@@ -10,7 +10,6 @@ Add to ~/.bashrc :
    export PATH=$PATH:/${comp_chem_py}/bin
 
 TODOs
-   - Make sure all scripts are protected by an if __name__ == '__main__': command
    - document everything with sphinx
    - link to read the docs
    - add tests (maybe...)

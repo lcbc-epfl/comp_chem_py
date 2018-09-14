@@ -11,7 +11,7 @@ of the Molecular electronic structure theory book by Helgaker.
 The expressions can then be simplified to expressions that can be implemented
 in standard quantum chemistry packages.
 
-see expression.py script contains examples of utilization.
+To see examples of usage look into ${comp_chem_py}/tests/expressions.py
 
 TODO: 
    - add triple and quadruple permutations
