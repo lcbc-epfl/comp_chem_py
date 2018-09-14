@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Calculate number of basis function from molecular structure and basis set"""
+description="""Calculate number of basis function from molecular structure and basis set"""
 
 __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
@@ -10,6 +10,8 @@ import argparse
 from ebsel.src.EMSL_local import EMSL_local
 from ebsel.src.conversion import Converter
 
+from comp_chem_utils import utils as u
+from comp_chem_utils import molecule_data
 from comp_chem_utils.molecule_data import mol_file
 
 

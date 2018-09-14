@@ -7,7 +7,6 @@ __email__="pablo.baudin@epfl.ch"
 
 from conversions import BOHR_TO_ANG
 from mysql_tables import mol_info_table, mol_xyz_table
-
 from periodic import element
 
 hostname = 'localhost'
