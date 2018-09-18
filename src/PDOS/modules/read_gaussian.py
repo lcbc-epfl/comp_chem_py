@@ -50,7 +50,7 @@ from comp_chem_utils.conversions import convert
 
 
 class gauss_atom:
-    """contain basis information about an atom"""
+    """Contain basis information about an atom."""
 
     def __init__(self):
         self.label = "X"
@@ -64,7 +64,26 @@ class gauss_atom:
 
 
 def get_gaussian_info(filename):
-    """Extract overlap and MO transformation matrices from Gaussian output file"""
+    """Extract relevant information from a Gaussian output file.
+    
+    Goes through a gaussian output file looking for the information
+    required to calculate PDOS.
+
+    Args:
+        filename (str): Name of the Gaussian output file, it may
+            also include the path to the file.
+
+    Returns:
+        nocc (int): Number of occupied orbitals.
+
+        nbas (int): Number of basis functions (atomic orbitals).
+
+        overlap (np.array): Squared AO overlap matrix. 
+
+        epsilon (list): Molecular orbital energies.
+
+        coef (np.array): Matrix of the molecular orbital coefficients.
+    """
 
     # Store the whole gaussian file in output
     # ---------------------------------------

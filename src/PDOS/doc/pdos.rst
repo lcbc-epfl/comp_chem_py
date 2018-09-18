@@ -1,13 +1,13 @@
-Partial density of states, PDOS
-===============================
+Partial Density Of States
+-------------------------
 
 The DOS is the function,
 
 .. math::
    DOS(E) = \sum_i g(E-\epsilon_i)
 
-where g is a gaussian with fixed FWHM and :math:`\epsilon_i` is the energy of the i-th molecular
-orbital (MO).  The formula for the PDOS for the :math:`\mu`-th atomic orbital (AO) is
+where :math:`g` is a gaussian with fixed FWHM and :math:`\epsilon_i` is the energy of the :math:`i`-th molecular
+orbital (MO).  The formula for the PDOS of the :math:`\mu`-th atomic orbital (AO) is
 
 .. math::
    PDOS(E)_\mu = \sum_i q_{\mu i} g(E-\epsilon_i)
@@ -28,9 +28,9 @@ is the AO overlap matrix and
 .. math::
    P_{\mu \nu}^i = C_{\nu i} C_{\mu i}
 
-is the i-th MO density matrix calculated from the MO coefficient matrix, C.
-Alternatively, we propose to calculate PDOS from Lowdin charges to avoid 
-possible negative PDOS. Lowdin charges can be calculated as
+is the :math:`i`-th MO density matrix calculated from the MO coefficient matrix, :math:`C`.
+Alternatively, we propose to calculate PDOS from Löwdin charges to avoid 
+possible negative PDOS. Löwdin charges can be calculated as
 
 .. math::
    q^L_{\mu i} = \sum_\nu S^{1/2}_{\mu \nu} P_{\nu \nu}^i S^{1/2}_{\mu \nu}.
