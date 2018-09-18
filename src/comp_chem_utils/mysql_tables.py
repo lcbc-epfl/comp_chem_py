@@ -1,15 +1,17 @@
 #!/usr/bin/env python
-""" Contains to class: 
-        mol_info_table
-        mol_xyz_table
-    
-    Which correspond to the two types of tables used in the molecules database.
-    Both tables can be manipulated by (sometimes common) functions such as 
-        add_row
-        create_table 
-        ...
+"""
+Definitions of classes to work with molecular data.
 
-    the functions only return a MySQL execution line that has to be executed outside!
+The mol_info_table class is used to store and manipulated 
+information about a molecule.
+
+The mol_xyz_table class is used to store and manipulated
+the xyz coodinate of a molecule.
+
+The functions defined here are basically wrappers to
+MySQL execution lines.
+Each function returns a MySQL command that should be
+executed by the calling routine.
 """
 
 __author__="Pablo Baudin"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Collection of simple functions useful in computational chemistry scripting"""
+"""Collection of simple functions useful in computational chemistry scripting."""
 
 __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
@@ -24,6 +24,16 @@ def get_lmax_from_atomic_charge(charge):
     return lmax
 
 def get_file_as_list(filename, raw=False):
+    """Read a file and return it as a list.
+
+    By default comments (i.e. lines starting with #)
+    and empty lines are ommited. This can be changed
+    by setting ``raw=True``
+
+    :param str filename: Name of the file to read.
+    :param bool raw: Return file as it is.
+
+    :returns: A list of lines (str)."""
 
     lines = []
     with open(filename,'r') as myfile:
@@ -41,7 +51,11 @@ def get_file_as_list(filename, raw=False):
 
 
 def make_new_dir(dirn):
-    # make new empty directory
+    """Make new empty directory.
+    If the directory already exists it is erased and replaced
+    
+    :param str dirn: Name for the new directory (can include path)."""
+
     if not os.path.exists(dirn):
         os.makedirs(dirn)
     else:
@@ -54,7 +68,7 @@ def make_new_dir(dirn):
         os.makedirs(dirn)
 
 def center_of_mass(xyz):
-    """Calculate center of mass from xyz coordinates (xyz file format)"""
+    """Calculate center of mass from xyz coordinates (xyz file format)."""
     totM = 0.0
     COM = np.zeros((3))
     for line in xyz:
@@ -69,9 +83,9 @@ def center_of_mass(xyz):
     return COM
 
 def change_vector_norm(fix, mob, R):
-    """given a fix position: fix(x,y,z) 
-    and a mobile position: mob(x,y,z)
-    and a new vector magnitude: R
+    """Given a fix position: fix(x,y,z), 
+    and a mobile position: mob(x,y,z),
+    and a new vector magnitude: R,
     we output new coordinates for the mobile position
     such that the distance fix-mob is R without changing the direction."""
     
@@ -84,7 +98,7 @@ def change_vector_norm(fix, mob, R):
 
 
 def get_rmsd(coord1, coord2):
-    """ Calculate RMSD between two sets of coordinates"""
+    """Calculate RMSD between two sets of coordinates."""
 
     rmsd = 0
     for c1, c2 in zip(coord1, coord2):
@@ -99,7 +113,7 @@ def get_rmsd(coord1, coord2):
 
 
 def get_distance(table, atoms):
-    """ Calculate distance between two atoms in table of xyz type"""
+    """Calculate distance between two atoms in table of xyz type."""
     coord1 = np.array([table[atoms[0]][x] for x in range(1,4)])
     coord2 = np.array([table[atoms[1]][x] for x in range(1,4)])
     vector = coord2 - coord1
@@ -107,7 +121,7 @@ def get_distance(table, atoms):
     return np.linalg.norm(vector)
 
 def get_angle(table, atoms):
-    """ Calculate angle between three atoms in table of xyz type"""
+    """Calculate angle between three atoms in table of xyz type."""
     coord1 = np.array([table[atoms[0]][x] for x in range(1,4)])
     coord2 = np.array([table[atoms[1]][x] for x in range(1,4)])
     coord3 = np.array([table[atoms[2]][x] for x in range(1,4)])
@@ -117,10 +131,9 @@ def get_angle(table, atoms):
     return np.degrees( np.arccos( np.dot(vec1,vec2) / (np.linalg.norm(vec1) * np.linalg.norm(vec2)) ) )
 
 def get_dihedral_angle(table, atoms):
-    """ Calculate angle between three atoms in table of xyz type
+    """Calculate angle between three atoms in table of xyz type.
 
-    Praxeolitic formula
-    1 sqrt, 1 cross product"""
+    Praxeolitic formula (1 sqrt, 1 cross product)."""
     p0 = np.array([table[atoms[0]][x] for x in range(1,4)])
     p1 = np.array([table[atoms[1]][x] for x in range(1,4)])
     p2 = np.array([table[atoms[2]][x] for x in range(1,4)])

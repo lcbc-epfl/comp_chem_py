@@ -6,12 +6,18 @@
 Welcome to comp_chem_py's documentation!
 ========================================
 
+Most of the documentation here is automatically generated
+from docstrings in the source code and README.rst files
+present in the different directories of the package.
+
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
-   code
+   comp_chem_utils
+   PDOS
+
 
 
 

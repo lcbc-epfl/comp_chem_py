@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-"""Library of physical constants
+"""Library of physical constants.
 
-old version of https://github.com/georglind/physcon.git
+Old version of https://github.com/georglind/physcon.git
 """
 # physcon Physical constants
 # Note: type physcon.help() (after import physcon)

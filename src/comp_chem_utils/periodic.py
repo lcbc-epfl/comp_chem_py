@@ -117,7 +117,7 @@ periodic_string = """1.0079     Hydrogen               H   1
 277        Hassium                Hs  108"""
 
 class Element(object):
-    """atomic elements are defined by mass, name, symbol, and atomic number"""
+    """Atomic elements are defined by mass, name, symbol, and atomic number."""
 
     def __init__(self, mass, name, symbol, atomic):
         self.mass = mass
@@ -127,7 +127,7 @@ class Element(object):
 
 
 def type_(type_):
-    """Returns a string repr of the 'real type_'."""
+    """Returns a string representation of the 'real type\_'."""
 
     try:
         type_ = float(type_)
