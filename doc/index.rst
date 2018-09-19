@@ -18,9 +18,6 @@ Contents:
    comp_chem_utils
    PDOS
 
-
-
-
 Indices and tables
 ==================
 

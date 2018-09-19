@@ -26,8 +26,14 @@ __email__="pablo.baudin@epfl.ch"
 
 # import modules
 # --------------
-from Tkinter import *
-from modules.PDOS_module import calculate_and_plot_pdos
+try:
+    # python 2
+    from Tkinter import *
+except ImportError:
+    # python 3
+    from tkinter import *
+
+from PDOS.modules.PDOS_module import calculate_and_plot_pdos
 
 
 def try_plot_from_gui():

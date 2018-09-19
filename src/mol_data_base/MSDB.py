@@ -4,10 +4,13 @@
 __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
-import Tkinter as tk
 try:
+    # python 2
+    import Tkinter as tk
     import ttk
 except ImportError:
+    # python 3
+    import tkinter as tk
     from tkinter import ttk
 
 import tkFont

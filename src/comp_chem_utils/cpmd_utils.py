@@ -8,9 +8,9 @@ import sys
 import os
 import numpy as np
 
-from molecule_data import read_xyz_table, xyz_file
-from utils import get_file_as_list, get_lmax_from_atomic_charge
-from conversions import AU_TO_PS
+from comp_chem_utils.molecule_data import read_xyz_table, xyz_file
+from comp_chem_utils.utils import get_file_as_list, get_lmax_from_atomic_charge
+from comp_chem_utils.conversions import AU_TO_PS
 
 verbose = False
 
@@ -18,8 +18,23 @@ def read_standard_file(fn):
     """
     Read standard trajectory file and export it.
 
-    First column contains the steps indices exported as list steps.
-    The other columns contain some information exported as np array info.
+    Here a trajectory file is understood as a file arranged
+    as columns in which the first column contains the
+    step indices and the others any type of informations.
+
+    For example the ENERGIES or SH_STATE.dat files enter
+    in this category.
+
+    Args:
+        fn (str): Name of the trajectory file.
+
+    Returns:
+        steps (list): List of step indices (int) as read from
+            the first column of the trajectory file.
+
+        info (np.arrays): Contains the rest of the file as
+            an (numpy) array of floats.
+
     """
 
     lines = get_file_as_list(fn)
@@ -29,22 +44,38 @@ def read_standard_file(fn):
 
     info = np.zeros( (len(steps), ninfo) )
     for i, line in enumerate(lines):
-        info[i,:] = [float(line.split()[j+1]) for j in xrange(ninfo)]
+        info[i,:] = [float(line.split()[j+1]) for j in range(ninfo)]
 
     return steps, info
 
 
 def read_TRAJEC_xyz(fn):
-    """
-    Read TRAJEC.xyz file and export it.
+    """Read TRAJEC.xyz file and export it.
     
-    An xyz type information is printed for each step along the trajectory.
+    An xyz type information is read for each step in the trajectory file,
+    where xyz info is assumed to have the following format::
+
         number of atoms
         title line = step index
         atom 1 label  and corresponding xyz coordinate
         atom 2 label  and corresponding xyz coordinate
         : : :
         atom N label  and corresponding xyz coordinate
+
+    Args:
+        fn (str): Name of the TRAJEC.xyz file.
+
+    Returns:
+        steps, traj_xyz
+        
+        steps (list): List of step indices (int) as read from 
+            the title line of each xyz_data block.
+
+        traj_xyz (list): List of xyz_data blocks. Each block
+            is itself a list of the lines containing the coordinates
+            in the xyz format. Each line is a 4 item list with first
+            index the atom symbol and the last 3 items are the xyz
+            coodinates.
     """
 
     lines = get_file_as_list(fn)
@@ -53,7 +84,7 @@ def read_TRAJEC_xyz(fn):
     # 1 xyz_data consist of natoms lines plus the two first lines (natoms + step index) 
     traj_xyz = []
     steps = []
-    for xyz_data in (lines[x:x+natoms+2] for x in xrange(0,len(lines),natoms+2)):
+    for xyz_data in (lines[x:x+natoms+2] for x in range(0,len(lines),natoms+2)):
         # test that the xyz_data is not empty
         if (xyz_data[0].strip()):
             # read_xyz_table return a list of length natoms
@@ -65,8 +96,14 @@ def read_TRAJEC_xyz(fn):
  
 
 def write_TRAJEC_xyz(steps, traj_xyz, output):
-    """
-    Write a TRAJEC.xyz file (CPMD style) to the output file
+    """Write a TRAJEC.xyz file (CPMD style) to the output file.
+    
+    Args:
+        steps (list): Step indices. See read_TRAJEC_xyz() function.
+            
+        traj_xyz (list): xyz data. See read_TRAJEC_xyz() function.
+            
+        output (str): Name (and path) fo the file in which the information will be written.
     """
 
     with open(output, 'w') as myf:
@@ -86,8 +123,7 @@ def split_TRAJEC_data(steps, traj_xyz,
         delta=None,
         dt=5,
         name=''):
-    """
-    Select equidistant xyz data snapshot from trajectory data.
+    """Select equidistant xyz data snapshot from trajectory data.
     It does it based on a starting index step and a total
     number of steps.
     
@@ -99,9 +135,9 @@ def split_TRAJEC_data(steps, traj_xyz,
     """
 
     if verbose:
-        print "Total number of steps    : {}".format(len(steps))
-        print "First and last step index: {} - {}".format(steps[0], steps[-1])
-        print "Delta between two steps  : {}\n".format(steps[1]-steps[0])
+        print("Total number of steps    : {}".format(len(steps)))
+        print("First and last step index: {} - {}".format(steps[0], steps[-1]))
+        print("Delta between two steps  : {}\n".format(steps[1]-steps[0]))
 
     if interactif:
         # ask user to chose the relevant snapshots
@@ -134,16 +170,16 @@ def split_TRAJEC_data(steps, traj_xyz,
     if stop_i>len(steps):
         stop_i = len(steps)
         if verbose:
-            print "WARNING new number of steps: {}".format( len(range(start_i, stop_i, delta)) )
+            print("WARNING new number of steps: {}".format( len(range(start_i, stop_i, delta)) ))
 
     if verbose:
-        print "Starting index:      {}".format( start_i )
-        print "Last index:          {}".format( stop_i )
-        print "Number of snapshots: {}\n".format( nstep )
+        print("Starting index:      {}".format( start_i ))
+        print("Last index:          {}".format( stop_i ))
+        print("Number of snapshots: {}\n".format( nstep ))
 
-        print "# steps between two snapshots: {}".format(d_steps)
-        print "Time between snapshots [a.u.]: {}".format(d_steps * dt)
-        print "Time between snapshots [ps]:   {}\n".format(d_steps * dt * AU_TO_PS)
+        print("# steps between two snapshots: {}".format(d_steps))
+        print("Time between snapshots [a.u.]: {}".format(d_steps * dt))
+        print("Time between snapshots [ps]:   {}\n".format(d_steps * dt * AU_TO_PS))
 
 
     # Loop over chosen configurations
@@ -242,7 +278,7 @@ def read_FTRAJECTORY(fn, forces=True):
         print('INFO: number of steps: {}'.format(nstep))
         print('INFO: number of atoms: {}'.format(natoms))
 
-    blocks = [ lines[x:x+natoms] for x in xrange(0, nlines, natoms) ]
+    blocks = [ lines[x:x+natoms] for x in range(0, nlines, natoms) ]
 
     if verbose:
         print('INFO: blocks read')
@@ -263,10 +299,10 @@ def read_FTRAJECTORY(fn, forces=True):
         for i, ml in enumerate(blk):
 
             l = ml.split()
-            myxyz[i,:] = [float(l[x]) for x in xrange(1,4)]
-            myvel[i,:] = [float(l[x]) for x in xrange(4,7)]
+            myxyz[i,:] = [float(l[x]) for x in range(1,4)]
+            myvel[i,:] = [float(l[x]) for x in range(4,7)]
             if forces:
-                myfce[i,:] = [float(l[x]) for x in xrange(7,10)]
+                myfce[i,:] = [float(l[x]) for x in range(7,10)]
 
         xyz.append( myxyz )
         vel.append( myvel )
@@ -377,7 +413,7 @@ def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
 
     steps, info = read_standard_file(fn)
 
-    myrange = xrange(1, len(info[:,0]), (MTS_FACTOR+1))
+    myrange = range(1, len(info[:,0]), (MTS_FACTOR+1))
 
     if HIGH:
         SUB='HIGH'
@@ -409,31 +445,31 @@ def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
 if __name__ == "__main__":
     # TODO: actually test the result of the functions
 
-    print "Testing {} module\n".format(os.path.basename(__file__))
+    print("Testing {} module\n".format(os.path.basename(__file__)))
 
     fold = './tests/CPMD_files/'
 
     fn = '{}SH_ENERG.dat'.format(fold)
     read_standard_file(fn)
-    print "Test of function: read_standard_file: OK"
+    print("Test of function: read_standard_file: OK")
 
     # read ./test/TRAJEC.xyz file and print it to new file
     fn = "{}TRAJEC.xyz".format(fold)
     steps, traj_xyz = read_TRAJEC_xyz(fn)
-    print "Test of function: read_TRAJEC_xyz   : OK"
+    print("Test of function: read_TRAJEC_xyz   : OK")
 
     output = '{}TRAJEC_1.xyz'.format(fold)
     write_TRAJEC_xyz(steps, traj_xyz, output)
-    print "Test of function: write_TRAJEC_xyz  : OK"
+    print("Test of function: write_TRAJEC_xyz  : OK")
     #os.rm(output)
 
     fn = '{}FTRAJECTORY'.format(fold)
     read_FTRAJECTORY(fn)
-    print "Test of function: read_FTRAJECTORY  : OK"
+    print("Test of function: read_FTRAJECTORY  : OK")
 
     fn = '{}ENERGIES'.format(fold)
     read_ENERGIES(fn, ref_code)
-    print "Test of function: read_ENERGIES     : OK"
-    print "\nAll tests were successfully executed! :D"
+    print("Test of function: read_ENERGIES     : OK")
+    print("\nAll tests were successfully executed! :D")
 
 

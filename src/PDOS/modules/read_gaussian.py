@@ -58,9 +58,9 @@ class gauss_atom:
         self.basis = {}
 
     def output(self):
-        print "label =", self.label
-        print "index =", self.index
-        print "basis =", self.basis
+        print("label = {}".format(self.label))
+        print("index = {}".format(self.index))
+        print("basis = {}".format(self.basis))
 
 
 def get_gaussian_info(filename):
@@ -100,9 +100,9 @@ def get_gaussian_info(filename):
     nline = get_line(output,"alpha electrons")
     nocc = int(output[nline].split()[0])
 
-    print "Number of basis functions   = ",nbas
-    print "Number of occupied orbitals = ",nocc,"\n"
-    print "Reading Overlap and MO transformation matrices..."
+    print("Number of basis functions   = {}".format(nbas))
+    print("Number of occupied orbitals = {}\n".format(nocc))
+    print("Reading Overlap and MO transformation matrices...")
     
     
     # Read overlap matrix from gaussian output
@@ -133,7 +133,7 @@ def get_gaussian_info(filename):
         iblock = nbas/5
         iline = read_orbitals_and_coefs(iblock,nbas,iline,rest,epsilon,coef,output)
 
-    print "Gaussian output file parsed"
+    print("Gaussian output file parsed")
     return nocc,nbas,overlap,epsilon,coef
 
 
@@ -287,7 +287,7 @@ def read_atom_and_basis(gaussian_file):
             atom.index = int(line.split()[1])
             atom.label = line.split()[2]
         else:
-            print "Something wrong while reading gaussian file"
+            print("Something wrong while reading gaussian file")
             exit()
     
         # read basis set for atom

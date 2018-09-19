@@ -5,9 +5,9 @@ __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
 
-from conversions import BOHR_TO_ANG
-from mysql_tables import mol_info_table, mol_xyz_table
-from periodic import element
+from comp_chem_utils.conversions import BOHR_TO_ANG
+from comp_chem_utils.mysql_tables import mol_info_table, mol_xyz_table
+from comp_chem_utils.periodic import element
 
 hostname = 'localhost'
 username = 'root'
@@ -178,7 +178,7 @@ class mol_data(object):
             nat += atype.natoms
 
         if nat!=self.natoms:
-            print "ERROR: Inconsistency in mol_data (natoms)",nat,self.natoms
+            print("ERROR: Inconsistency in mol_data (natoms)".format(nat,self.natoms))
             return "Inconsistency in mol_data (natoms)"
 
 
@@ -295,7 +295,7 @@ class mol_file(object):
             nat += atype.natoms
 
         if nat!=self.natoms:
-            print "ERROR: Inconsistency in mol_file data (natoms)",nat,self.natoms
+            print("ERROR: Inconsistency in mol_file data (natoms)".format(nat,self.natoms))
             return "Inconsistency in mol_file data (natoms)"
 
     def read_mol(self, filename):
@@ -429,7 +429,7 @@ class xyz_file(object):
             nat += atype.natoms
 
         if nat!=self.natoms:
-            print "ERROR: Inconsistency in xyz_file data (natoms)",nat,self.natoms
+            print("ERROR: Inconsistency in xyz_file data (natoms)".format(nat,self.natoms))
             return "Inconsistency in xyz_file data (natoms)"
 
     def read_xyz(self, filename):

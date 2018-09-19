@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """Simplified version of periodic table of atomic elements"""
 
 __author__="Pablo Baudin"

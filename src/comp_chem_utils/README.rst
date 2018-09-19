@@ -7,8 +7,6 @@ utils
 -----
 
 .. automodule:: comp_chem_utils.utils
-   :members:
-   :undoc-members:
 
 conversions
 -----------
@@ -28,6 +26,13 @@ spectrum
 --------
 
 .. automodule:: comp_chem_utils.spectrum
+   :members:
+   :undoc-members:
+
+cpmd_utils
+----------
+
+.. automodule:: comp_chem_utils.cpmd_utils
    :members:
    :undoc-members:
 

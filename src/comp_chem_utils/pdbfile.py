@@ -6,8 +6,8 @@ __email__="pablo.baudin@epfl.ch"
 
 import numpy as np
 
-from periodic import element
-from utils import *
+from comp_chem_utils.periodic import element
+from comp_chem_utils.utils import *
 
 
 # remoteness indicator code sequence
@@ -271,7 +271,7 @@ class residue(object):
             new_atoms.append(myat)
 
         if (ifix == -1) or (imob == -1):
-            print "ERROR(residue: change_bond_length): atoms not found!"
+            print("ERROR(residue: change_bond_length): atoms not found!")
             return
 
         # get new coordinates

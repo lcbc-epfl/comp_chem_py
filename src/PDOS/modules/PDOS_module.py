@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 import scipy.linalg as sc
 import numpy as np      
 
-from read_gaussian import get_gaussian_info
+from PDOS.modules.read_gaussian import get_gaussian_info
 
 
 def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, plot_dos, dos):
@@ -115,13 +115,13 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     nocc, nbas, overlap, eps, coef = get_gaussian_info(gaussian_file)
 
     if (mulliken):
-        print "Calculating Mulliken partial charges..."
+        print("Calculating Mulliken partial charges...")
         # get partial Mulliken charges
         # q_{alpha,i} = sum_{beta} S_{alpha,beta} C_{beta,i} C_{alpha,i}  
         part_pop = np.dot(overlap, coef)
         part_pop = np.multiply(part_pop, coef)
     else:
-        print "Calculating Lowdin partial charges..."
+        print("Calculating Lowdin partial charges...")
         # get partial Lowdin charges
         # q_{alpha,i} = sum_{beta} S_{alpha,beta}^{1/2} C_{beta,i} C_{alpha,i} S_{alpha,beta}^{1/2} 
         Shalf = sc.sqrtm(overlap)
@@ -134,7 +134,7 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
 
     # make groups of atomic orbitals based on file "group_file"
     # ---------------------------------------------------------
-    print "Reading group of AOs file: ",group_file, "\n"
+    print("Reading group of AOs file: {}\n".format(group_file))
     inputfile = open(group_file,"r")
 
     # there are different groups of orbitals, for each group we have a 
@@ -155,7 +155,7 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
                 else:
                     orbitals.extend(range(int(temp[0]),int(temp[1])+1))
             except:
-                print "Warning: error while reading ",group_file
+                print("Warning: error while reading {}".format(group_file))
 
         # associate list of orbitals to each group
         groups[groupname] = orbitals
@@ -166,7 +166,7 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     # Define the parameters of the gaussian convolution based
     # on user inputs or predefined defaults
     # -------------------------------------------------------
-    print "Gaussian convolution of data..."
+    print("Gaussian convolution of data...")
 
     # get x-axis range
     if (xmax - xmin) <= 0:
@@ -185,12 +185,12 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     norm = np.sqrt(alpha/np.pi)
     dos = np.zeros(npts)
 
-    print "xmax = ",xmax," [eV]"
-    print "xmin = ",xmin," [eV]"
-    print "npts = ",npts
-    print "FWHM = ",fwhm
-    print "norm = ",norm
-    print "alpha = ",alpha
+    print("xmax = {} [eV]".format(xmax))
+    print("xmin = {} [eV]".format(xmin))
+    print("npts = {}".format(npts))
+    print("FWHM = {}".format(fwhm))
+    print("norm = {}".format(norm))
+    print("alpha = {}".format(alpha))
 
 
     # calculate the total density of states (DOS)
@@ -226,8 +226,7 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
 
             pdos[igrp] += pop*norm*np.exp(-alpha*(eps[iorb]-xpts)**2.0)
         
-    print ""
-    print "Convolution of data done!"
+    print("\nConvolution of data done!")
     
 
     # make actual plots

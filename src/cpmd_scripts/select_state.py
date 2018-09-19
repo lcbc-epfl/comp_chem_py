@@ -13,7 +13,7 @@ __email__="pablo.baudin@epfl.ch"
 import sys
 from numpy.random import choice
 
-from comp_chem_py.spectrum import read_spectrum
+from comp_chem_utils.spectrum import read_spectrum
 
 # for compatibility with autodoc in sphinx
 if __name__ == '__main__':

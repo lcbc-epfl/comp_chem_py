@@ -8,9 +8,9 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-from utils import get_file_as_list
-import physcon as const
-import conversions as conv
+from comp_chem_utils.utils import get_file_as_list
+import comp_chem_utils.physcon as const
+import comp_chem_utils.conversions as conv
 
 
 class Search(object):
@@ -39,16 +39,16 @@ class Search(object):
             # return value converted to proper units
             return float( data ) * self.cfac
 
-        except Exception, e:
-            print 'ERROR: class info:'
-            print '     kind       :', self.kind
-            print '     search_str :', self.search_str
-            print '     col_id     :', self.col_id
-            print '     offset     :', self.offset
-            print '     trim       :', self.trim
-            print '     cfac       :', self.cfac
-            print 'ERROR: output line:', lines[idx + self.offset ]
-            print 'ERROR: ', e
+        except Exception as e:
+            print('ERROR: class info:')
+            print('     kind       :{}'.format(self.kind))
+            print('     search_str :{}'.format(self.search_str))
+            print('     col_id     :{}'.format(self.col_id))
+            print('     offset     :{}'.format(self.offset))
+            print('     trim       :{}'.format(self.trim))
+            print('     cfac       :{}'.format(self.cfac))
+            print('ERROR: output line:{}'.format(lines[idx + self.offset ]))
+            print('ERROR: {}'.format(e))
             sys.exit('ERROR(read_spectrum): failed to read data from output')
 
 
@@ -96,6 +96,15 @@ def search_osc(kind):
         return Search(kind, ' Oscillator strength:', -1, offset=4)
 
 
+def print_spectrum(exc_ener,strength,output):
+    """Print table summary of Excitation energies and oscillator strengths."""
+
+    print('\n   Energy (eV)   Strength  ')
+    print(  '  ------------------------ ')
+    for e, f in zip(exc_ener, strength):
+        print('    {:7.3f}    {:10.5f}   '.format(e,f))
+    print('\nSpectrum information succesfully read from {} \n'.format(output))
+
 
 def read_spectrum(output, kind, verbose=False):
     """Read file output and parse it to find excitation energies and oscillator strengths"""
@@ -120,11 +129,7 @@ def read_spectrum(output, kind, verbose=False):
             strength.append( s_osc.get(out, idx) )
 
     if verbose:
-        print '\n   Energy (eV)   Strength  '
-        print   '  ------------------------ '
-        for e, f in zip(exc_ener, strength):
-            print   '    {:7.3f}    {:10.5f}   '.format(e,f)
-        print '\nSpectrum information succesfully read from {} \n'.format(output)
+        print_spectrum(exc_ener,strength,output)
 
     return np.asarray(exc_ener), np.asarray(strength)
 
@@ -150,11 +155,7 @@ def read_table_spectrum(output, search_str, skip=0, pos_e=1, pos_f=2, verbose=Fa
                     keep_reading = False
 
     if verbose:
-        print '\n   Energy (eV)   Strength  '
-        print   '  ------------------------ '
-        for e, f in zip(exc_ener, strength):
-            print   '    {:7.3f}    {:10.5f}   '.format(e,f)
-        print '\nSpectrum information succesfully read from {} \n'.format(output)
+        print_spectrum(exc_ener,strength,output)
 
     return np.asarray(exc_ener), np.asarray(strength)
 
@@ -213,11 +214,11 @@ def spectral_function(
         delta = fwhm_freq/np.sqrt(2.0 * np.log(2.0))
         norm = np.sqrt( 2.0/(delta * delta * np.pi) )/nconf
 
-    print "npts = ",npts
-    print "xmax = {} [{}]".format(xmax, unit_in)
-    print "xmin = {} [{}]".format(xmin, unit_in)
-    print "Convolution with a {} function and FWHM = {} [{}]".format(ctype, fwhm, unit_in)
-    print "Number of structures/conformations = ", nconf
+    print("npts = {}".format(npts))
+    print("xmax = {} [{}]".format(xmax, unit_in))
+    print("xmin = {} [{}]".format(xmin, unit_in))
+    print("Convolution with a {} function and FWHM = {} [{}]".format(ctype, fwhm, unit_in))
+    print("Number of structures/conformations = {}".format( nconf))
 
     # make convolution of spectrum
     for i, f in enumerate(osc):
@@ -301,7 +302,7 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
     if kind=='STICKS':
         plot_stick_spectrum(exc, osc, color='b')
         if not plot:
-            print 'That was quite stupid...'
+            print('That was quite stupid...')
             return exc, osc
 
     else:

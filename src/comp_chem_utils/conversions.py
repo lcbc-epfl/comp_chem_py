@@ -5,7 +5,8 @@ __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
 import numpy as np
-import physcon as const
+
+import comp_chem_utils.physcon as const
 
 
 # electron-volt: by definition, it is the amount of energy gained (or lost) by the charge of a 
@@ -73,10 +74,10 @@ def convert(X, from_u, to_u):
     """ returns X converted from 'from_u' unit to 'to_u' unit"""
     # test input
     if from_u not in convert_to_joules:
-        print "unit {} not part of convert_to_joules dictionary".format(from_u)
+        print("unit {} not part of convert_to_joules dictionary".format(from_u))
         sys.exit("Wrong unit in energy conversion function")
     if to_u not in convert_to_joules:
-        print "unit {} not part of convert_to_joules dictionary".format(to_u)
+        print("unit {} not part of convert_to_joules dictionary".format(to_u))
         sys.exit("Wrong unit in energy conversion function")
 
     # Wavelength is inversly proportional to the eneergy
@@ -102,17 +103,17 @@ def convert(X, from_u, to_u):
 
 # Conversion tests
 def test_conversion(value):
-    print "\nTesting all conversions with reference value = {}\n".format(value)
+    print("\nTesting all conversions with reference value = {}\n".format(value))
     for from_u in convert_to_joules:
         for to_u in convert_to_joules:
-            print ' {:15.8g} {:20} = {:15.8g} {:20}'.format(value, from_u, convert(value, from_u, to_u), to_u)
+            print(' {:15.8g} {:20} = {:15.8g} {:20}'.format(value, from_u, convert(value, from_u, to_u), to_u))
 
 def print_constants():
-    print '\nConversion constants:\n'
-    print 'EV_TO_JOULES  = {}'.format(EV_TO_JOULES)
-    print 'AU_TO_JOULES  = {}'.format(AU_TO_JOULES)
-    print 'SPEC_TO_SIGMA = {}'.format(SPEC_TO_SIGMA)
-    print 'SIGMA_TO_EPS  = {}'.format(SIGMA_TO_EPS)
+    print('\nConversion constants:\n')
+    print('EV_TO_JOULES  = {}'.format(EV_TO_JOULES))
+    print('AU_TO_JOULES  = {}'.format(AU_TO_JOULES))
+    print('SPEC_TO_SIGMA = {}'.format(SPEC_TO_SIGMA))
+    print('SIGMA_TO_EPS  = {}'.format(SIGMA_TO_EPS))
 
 if __name__=="__main__":
 
