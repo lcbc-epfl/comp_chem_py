@@ -22,6 +22,7 @@ spectrum
 --------
 
 .. automodule:: comp_chem_utils.spectrum
+   :members:
 
 cpmd_utils
 ----------
