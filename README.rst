@@ -3,7 +3,7 @@ Set up and installation
 
 In order to use the library, first clone it::
 
-   clone --recursive https://gitlab.com/pablobaudin/comp_chem_tmp.git
+   clone --recursive https://gitlab.com/pablobaudin/comp_chem_py.git
 
 Then export the PATH in your ``~/.bashrc``::
 
