@@ -31,10 +31,7 @@ Documentation
 
 .. todo::
    #. Keep improving documentation.
-   #. Remove old comp_chem_py libraries and rename the new one.
-   #. Make library open source.
-   #. Link documentation to read the docs.
-   #. Add link to documentation in this README file
+   #. Remove old_comp_chem_py repository/group and all subrepositories or archive it.
    #. Add tests. Maybe with doctest.
    #. Consider making comp_chem_utils an external submodule.
 
