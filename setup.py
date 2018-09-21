@@ -3,16 +3,15 @@
 from distutils.core import setup
 
 packages=[
-'comp_chem_utils/',
-'cpmd_scripts/',
-'PDOS/',
-'modules/',
-'simp_sec_quant/',
+'comp_chem_utils',
+'cpmd_scripts',
+'PDOS',
+'PDOS/modules',
+'simp_sec_quant',
 ]
 
 package_dir={
-        '':'src',
-        'modules':'src/PDOS'
+        '':'src'
         }
 #'src/comp_chem_utils/',
 #'src/cpmd_scripts/',
