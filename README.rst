@@ -1,4 +1,8 @@
-[![Documentation Status](https://readthedocs.org/projects/comp_chem_py/badge/?version=latest)](https://comp-chem-py.readthedocs.org)
+|Documentation Status|
+
+.. |Documentation Status| image:: https://readthedocs.org/projects/comp_chem_py/badge/?version=latest
+   :target: http://comp_chem_py.readthedocs.io/?badge=latest
+   
 .. [![License](https://img.shields.io/badge/license-%20BSD--3-blue.svg)](../master/LICENSE)
 
 Set up and installation
