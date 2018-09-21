@@ -26,7 +26,7 @@ Then export the PATH in your ``~/.bashrc``::
 Documentation
 =============
 
-* Please take a look at the code <`documentation <https://domain.invalid/>`_ for more details. 
+* Please take a look at the code `documentation <http://comp_chem_py.readthedocs.io/en/latest/>`_ for more details. 
 
 
 .. todo::
