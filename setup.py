@@ -6,21 +6,13 @@ packages=[
 'comp_chem_utils',
 'cpmd_scripts',
 'PDOS',
-'PDOS/modules',
+'PDOS.modules',
 'simp_sec_quant',
 ]
 
 package_dir={
         '':'src'
         }
-#'src/comp_chem_utils/',
-#'src/cpmd_scripts/',
-#'src/mol_data_base/',
-#'src/PDOS/',
-#'src/simp_sec_quant/',
-#'src/submission_scripts/',
-#'src/turbo_scripts/'
-#]
 
 setup(name='comp_chem_py',
       version='1.0',

@@ -1,35 +1,14 @@
 #!/usr/bin/env python
 """PDOS.py is a program which automatically extracts information from Gaussian 
 (http://www.gaussian.com/) output and calculates partial density of states 
-(PDOS) based upon Lowdin or Mulliken orbital analysis. 
+(PDOS) based upon Lowdin or Mulliken orbital analysis."""
 
-Documentation: http://pdos.readthedocs.io/
-"""
-
-#====================================================================
-# PDOS
-# Copyright (C) 2016 Pablo Baudin
-#
-# This library is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License as published by the Free Software Foundation; either
-# version 2.1 of the License, or (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public
-# License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-# 02110-1301 USA
-#====================================================================
 
 __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
 import argparse
+
 from PDOS.modules.PDOS_module import calculate_and_plot_pdos
 
 # for compatibility with autodoc in sphinx
