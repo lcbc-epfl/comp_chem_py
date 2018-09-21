@@ -12,64 +12,53 @@ conversions
 -----------
 
 .. automodule:: comp_chem_utils.conversions
-   :members:
-   :undoc-members:
 
 physcon
 -------
 
 .. automodule:: comp_chem_utils.physcon
-   :members:
-   :undoc-members:
 
 spectrum
 --------
 
 .. automodule:: comp_chem_utils.spectrum
-   :members:
-   :undoc-members:
 
 cpmd_utils
 ----------
 
 .. automodule:: comp_chem_utils.cpmd_utils
-   :members:
-   :undoc-members:
 
 periodic
 --------
 
 .. automodule:: comp_chem_utils.periodic
-   :members:
-   :undoc-members:
 
 molecule_data
 -------------
 
 .. automodule:: comp_chem_utils.molecule_data
-   :members:
-   :undoc-members:
 
 amino_acids
 -----------
 
 .. automodule:: comp_chem_utils.amino_acids
-   :members:
-   :undoc-members:
 
 pdbfile
 -------
 
 .. automodule:: comp_chem_utils.pdbfile
-   :members:
-   :undoc-members:
 
 
 mysql_tables
 ------------
 
 .. automodule:: comp_chem_utils.mysql_tables
-   :members:
-   :undoc-members:
 
 
+References
+----------
+
+.. [Barbatti2010a] Barbatti, M. *et al.*,  (2010). 
+   The UV absorption of nucleobases: semi-classical ab initio spectra simulations. 
+   *Physical Chemistry Chemical Physics*, **12**, 4959. 
+   http://doi.org/10.1039/b924956g

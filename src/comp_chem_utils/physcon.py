@@ -1,10 +1,24 @@
 #!/usr/bin/env python
 """Library of physical constants.
 
-Old version of https://github.com/georglind/physcon.git
+This is coming from an old version of https://github.com/georglind/physcon.git
+
+    >>> import comp_chem_utils.physcon as pc
+    >>> pc.help()
+    Available functions:
+    [note: key must be a string, within quotes!]
+      value(key) returns value (float)
+      sd(key)    returns standard deviation (float)
+      relsd(key) returns relative standard deviation (float)
+      descr(key) prints description with units
+    :
+    Available global variables:
+      alpha, a_0, c, e, eps_0, F, G, g_e, g_p, gamma_p, h, hbar, k_B
+      m_d, m_e, m_n, m_p, mu_B, mu_e, mu_N, mu_p, mu_0, N_A, R, sigma, u
+    :
+    Available keys:
+    ['alpha', 'alpha-1', 'amu', 'avogadro', 'bohrmagn', 'bohrradius', 'boltzmann', 'charge-e', 'conduct-qu', 'dirac', 'elec-const', 'faraday', 'gas', 'gfactor-e', 'gfactor-p', 'gravit', 'gyromagratio-p', 'josephson', 'lightvel', 'magflux-qu', 'magn-const', 'magnmom-e', 'magnmom-p', 'magres-p', 'mass-d', 'mass-d/u', 'mass-e', 'mass-e/u', 'mass-mu', 'mass-mu/u', 'mass-n', 'mass-n/u', 'mass-p', 'mass-p/u', 'nuclmagn', 'planck', 'ratio-me/mp', 'ratio-mp/me', 'rydberg', 'stefan-boltzm']
 """
-# physcon Physical constants
-# Note: type physcon.help() (after import physcon)
 
 from math import pi
 
@@ -88,6 +102,8 @@ u =  all['amu'][2]
 
 
 def help():
+    """Print information on how to use the module."""
+
     print('Available functions:')
     print('[note: key must be a string, within quotes!]' )
     print('  value(key) returns value (float)')
@@ -101,16 +117,29 @@ def help():
     print('Available keys:')
     print(allkeys)
 
+
 def value(key):
+    """Returns the value (float) of the physical constant corresponding to the input key.
+    
+    Args: 
+        key (str): single word description of an available constant.
+            See :py:func:`~comp_chem_utils.physcon.help` to see available keys.
+    """
     return all[key][2]
 
+
 def sd(key):
+    """Returns the standard deviation (float) of the physical constant corresponding to the input key."""
     return all[key][3]
 
+
 def relsd(key):
+    """Returns the relative standard deviation (float) of the physical constant corresponding to the input key."""
     return all[key][4]
 
+
 def descr(key):
+    """Print a description of the physical constant corresponding to the input key."""
     print('Description of ',key,':')
     print('  Name:               ',all[key][0])
     print('  Symbol (if avail.): ',all[key][1])
