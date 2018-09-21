@@ -1,9 +1,12 @@
+[![Documentation Status](https://readthedocs.org/projects/comp_chem_py/badge/?version=latest)](https://comp-chem-py.readthedocs.org)
+.. [![License](https://img.shields.io/badge/license-%20BSD--3-blue.svg)](../master/LICENSE)
+
 Set up and installation
 =======================
 
 In order to use the library, first clone it::
 
-   clone --recursive https://gitlab.com/pablobaudin/comp_chem_py.git
+   git clone --recursive https://gitlab.com/pablobaudin/comp_chem_py.git
 
 Then export the PATH in your ``~/.bashrc``::
 
@@ -11,6 +14,13 @@ Then export the PATH in your ``~/.bashrc``::
    export PATH=${COMP_CHEM_PATH}/bin:$PATH
    export PYTHONPATH=${COMP_CHEM_PATH}/external:$PYTHONPATH
    export PYTHONPATH=${COMP_CHEM_PATH}/src:$PYTHONPATH
+
+
+Documentation
+=============
+
+* [Master branch](https://comp-chem-py.readthedocs.io/en/latest/)
+
 
 .. todo::
    #. Keep improving documentation.
