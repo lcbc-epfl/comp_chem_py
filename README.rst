@@ -34,5 +34,6 @@ Documentation
    #. Remove old_comp_chem_py repository/group and all subrepositories or archive it.
    #. Add tests. Maybe with doctest.
    #. Consider making comp_chem_utils an external submodule.
+   #. Add section about requirements and dependencies on documentation.
 
 
