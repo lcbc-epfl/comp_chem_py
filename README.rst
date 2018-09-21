@@ -3,7 +3,11 @@
 .. |Documentation Status| image:: https://readthedocs.org/projects/comp_chem_py/badge/?version=latest
    :target: http://comp_chem_py.readthedocs.io/?badge=latest
    
-.. [![License](https://img.shields.io/badge/license-%20BSD--3-blue.svg)](../master/LICENSE)
+|MIT license| 
+
+.. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
+   :target: LICENSE
+   
 
 Set up and installation
 =======================
@@ -23,7 +27,7 @@ Then export the PATH in your ``~/.bashrc``::
 Documentation
 =============
 
-* [Master branch](https://comp-chem-py.readthedocs.io/en/latest/)
+* Please take a look at the code `documentation <`Link text <https://domain.invalid/>`_>`_ for more details. 
 
 
 .. todo::
