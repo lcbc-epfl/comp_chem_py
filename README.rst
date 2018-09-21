@@ -1,5 +1,5 @@
-comp_chem_py: python library for computational chemistry
-========================================================
+Set up and installation
+=======================
 
 In order to use the library, first clone it::
 
@@ -17,6 +17,8 @@ Then export the PATH in your ``~/.bashrc``::
    #. Remove old comp_chem_py libraries and rename the new one.
    #. Make library open source.
    #. Link documentation to read the docs.
+   #. Add link to documentation in this README file
    #. Add tests. Maybe with doctest.
    #. Consider making comp_chem_utils an external submodule.
+
 

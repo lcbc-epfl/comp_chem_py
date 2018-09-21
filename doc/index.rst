@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to comp_chem_py's documentation!
-========================================
+comp_chem_py: python library for computational chemistry
+========================================================
 
 Most of the documentation here is automatically generated
 from docstrings in the source code and README.rst files
@@ -17,6 +17,8 @@ Contents:
 
    comp_chem_utils
    PDOS
+
+.. include:: ../README.rst
 
 Indices and tables
 ==================
