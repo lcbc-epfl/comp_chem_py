@@ -1,10 +1,9 @@
 |Documentation Status|
+|MIT license| 
 
 .. |Documentation Status| image:: https://readthedocs.org/projects/comp_chem_py/badge/?version=latest
    :target: http://comp_chem_py.readthedocs.io/?badge=latest
    
-|MIT license| 
-
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
    :target: LICENSE
    
@@ -27,7 +26,7 @@ Then export the PATH in your ``~/.bashrc``::
 Documentation
 =============
 
-* Please take a look at the code `documentation <`Link text <https://domain.invalid/>`_>`_ for more details. 
+* Please take a look at the code <`documentation <https://domain.invalid/>`_ for more details. 
 
 
 .. todo::
