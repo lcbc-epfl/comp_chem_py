@@ -6,11 +6,13 @@ packages=[
 'comp_chem_utils/',
 'cpmd_scripts/',
 'PDOS/',
+'modules/',
 'simp_sec_quant/',
 ]
 
 package_dir={
-        '':'src'
+        '':'src',
+        'modules':'src/PDOS'
         }
 #'src/comp_chem_utils/',
 #'src/cpmd_scripts/',
