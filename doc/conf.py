@@ -33,7 +33,7 @@ release = '1.0'
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-needs_sphinx = '1.8'
+# needs_sphinx = '1.8'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
