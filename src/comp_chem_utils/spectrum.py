@@ -465,8 +465,7 @@ def cross_section(xpts, ypts, unit_in='ENERGY: eV', temp=None, refraction=1.0):
         It is calculated from the spectral function as
 
         .. math::
-            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect} 
-            \cdot \\text{SPEC\_TO\_SIGMA} n.
+            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect} \cdot \\text{SPEC\_TO\_SIGMA} n.
 
         where the temp_effect comes from :py:func:`~comp_chem_utils.spectrum.temperature_effect`,
         ``SPEC_TO_SIGMA`` is the main conversion constant from 
