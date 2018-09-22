@@ -70,10 +70,10 @@ SPEC_TO_SIGMA = 1.0e20 * np.pi * const.value('charge-e') * const.value('charge-e
 angular frequency unit) and the absorption cross section ``\sigma`` expressed in ``Angstroms^2``.
 
 .. math::
-    \sigma(\omega) = \\text{SPEC_TO_SIGMA} \cdot S(\omega)
+    \sigma(\omega) = \\text{SPEC\_TO\_SIGMA} \cdot S(\omega)
 
 .. math::
-    \\text{SPEC_TO_SIGMA} = 10^{20} \\frac{\\pi e^{2} }{2 m_{e} c \\epsilon_{0}} \cdot S(\\omega)
+    \\text{SPEC\_TO\_SIGMA} = 10^{20} \\frac{\\pi e^{2} }{2 m_{e} c \\epsilon_{0}} \cdot S(\\omega)
 
 For more details see the documentation of the :py:mod:`~comp_chem_utils.spectrum` module.
 """
@@ -87,10 +87,10 @@ SIGMA_TO_EPS = 1.0e-16 * 1.0e-3 * const.value('avogadro') / np.log(10.0)
 and the extinction coefficient expressed in ``M^{-1} . cm^{-1}``.
 
 .. math::
-    \epsilon(\omega) = \\text{SIGMA_TO_EPS} \cdot \\sigma(\omega)
+    \epsilon(\omega) = \\text{SIGMA\_TO\_EPS} \cdot \\sigma(\omega)
 
 .. math::
-    \\text{SIGMA_TO_EPS} = 10^{-16} \\frac{N_{A}}{10^{3} \\ln{10}} \cdot S(\\omega)
+    \\text{SIGMA\_TO\_EPS} = 10^{-16} \\frac{N_{A}}{10^{3} \\ln{10}} \cdot S(\\omega)
 
 For more details see the documentation of the :py:mod:`~comp_chem_utils.spectrum` module.
 """
