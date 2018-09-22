@@ -32,8 +32,11 @@ Documentation
 .. todo::
    #. Keep improving documentation.
    #. Remove old_comp_chem_py repository/group and all subrepositories or archive it.
-   #. Add tests. Maybe with doctest.
+   #. Add tests. Maybe with doctest. They should also be included in the setup.py. See,
+         https://python-packaging.readthedocs.io/en/latest/testing.html
    #. Consider making comp_chem_utils an external submodule.
    #. Add section about requirements and dependencies on documentation.
+   #. Add the ebsel package into setup.py using the git repo as,
+         dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
 
 
