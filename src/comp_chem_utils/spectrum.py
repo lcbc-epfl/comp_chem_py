@@ -465,16 +465,15 @@ def cross_section(xpts, ypts, unit_in='ENERGY: eV', temp=None, refraction=1.0):
         It is calculated from the spectral function as
 
         .. math::
-            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect} \cdot
+            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect} 
+            \cdot \\text{SPEC\_TO\_SIGMA} n.
 
         where the temp_effect comes from :py:func:`~comp_chem_utils.spectrum.temperature_effect`,
-        ``SPEC_TO_SIGMA`` is the main conversion constant from :py:mod:`~comp_chem_utils.spectrum.conversions`,
-        and n is the refraction index.
+        ``SPEC_TO_SIGMA`` is the main conversion constant from 
+        :py:mod:`~comp_chem_utils.spectrum.conversions`, and n is the refraction index.
 
         The absorption cross section is returned as grid points in an ``np.array()``.
     """
-#\\text{temp_effect} \cdot 
-#\\text{SPEC_TO_SIGMA} n.
     
     sigma = []
     for E, S in zip(xpts, ypts):
