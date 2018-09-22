@@ -16,7 +16,7 @@ Contents:
    :maxdepth: 2
 
    comp_chem_utils
-..   PDOS
+   PDOS
 
 .. include:: ../README.rst
 
