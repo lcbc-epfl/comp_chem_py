@@ -27,6 +27,18 @@ Contents:
 Set up and installation
 =======================
 
+Dependencies
+------------
+
+The comp_chem_py library depends on the following modules:
+
+* scipy_
+* numpy_
+* matplotlib_
+* MySQLdb_
+
+When installing the comp_chem_py library with pip_ those modules will be installed along if needed.
+
 Using git and Linux/UNIX
 ------------------------
 
@@ -44,8 +56,8 @@ Then export the PATH in your ``~/.bashrc``::
 Using pip
 ---------
 
-pip is the standard Python package manager. 
-To install ``comp_chem_py`` with pip:: 
+pip_ is the standard Python package manager. 
+To install ``comp_chem_py`` with pip_:: 
 
    pip install comp_chem_py
 
@@ -58,12 +70,17 @@ Please take a look at the code `documentation <http://comp_chem_py.readthedocs.i
 
 
 .. todo::
-   #. Keep improving documentation.
    #. Remove old_comp_chem_py repository/group and all subrepositories or archive it.
+
    #. Add tests. Maybe with doctest. They should also be included in the setup.py. See,
          https://python-packaging.readthedocs.io/en/latest/testing.html
+
    #. Consider making comp_chem_utils an external submodule.
-   #. Add section about requirements and dependencies on documentation.
+
+   #. test ./setup.py script with pip.
+
+   #. Find out how to deal with the dependeny on MySQLdb package.
+
    #. Add the ebsel package into setup.py using the git repo as,
          dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
 
