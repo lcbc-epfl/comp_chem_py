@@ -2,14 +2,9 @@
 
 from distutils.core import setup
 
-def readme():
-    with open('README.rst') as f:
+def read(fn):
+    with open(fn) as f:
         return f.read()
-
-def write_requirements(dependencies):
-    with open('requirements.txt','w') as f:
-        for p in dependencies:
-            f.write(p+'\n')
 
 packages=[
         'comp_chem_utils',
@@ -36,25 +31,16 @@ scripts=[
         'bin/truncate_solvent',
     ]
 
-dependencies=[
-        'matplotlib',
-        'numpy',
-        'scipy',
-        'MySQLdb',
-        #
-        # Other imported modules that I probably don't need to specify here...
-        #'itertools',
-        #'tkinter',
-        #'Tkinter',
-        #'argparse',
-        #'sys',
-        #'shutil',
-        #'os',
-        #'math',
-        #'subprocess',
-    ]
-
-write_requirements(dependencies)
+# Other imported modules that I probably don't need to specify here...
+#'itertools',
+#'tkinter',
+#'Tkinter',
+#'argparse',
+#'sys',
+#'shutil',
+#'os',
+#'math',
+#'subprocess',
 
 classifiers=[
         'Development Status :: 3 - Alpha',
@@ -72,7 +58,7 @@ classifiers=[
 setup(name='comp_chem_py',
         version='1.0',
         description='Computational chemistry library in python',
-        long_description=readme(),
+        long_description=read('README.rst'),
         license='MIT',
         author='Pablo Baudin',
         author_email='pablo.baudin@epfl.ch',
@@ -80,7 +66,7 @@ setup(name='comp_chem_py',
         package_dir=package_dir,
         packages=packages,
         scripts=scripts,
-        install_requires=dependencies,
+        install_requires=read('requirements.txt'),
         classifiers=classifiers,
         # this is to include files in MANIFEST.in file
         include_package_data=True,
