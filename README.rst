@@ -7,9 +7,28 @@
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
    :target: LICENSE
    
+comp_chem_py: python library for computational chemistry
+========================================================
+
+The comp_chem_py package is a collections of python modules and scripts 
+that can be usefull in computational chemistry.
+The package evolves with my needs in the field.
+Feel free to re-use and modify as you wish and :ref:`contact` me if you have any question or comment.
+
+Contents:
+---------
+
+.. toctree::
+   :maxdepth: 2
+
+   comp_chem_utils
+   PDOS
 
 Set up and installation
 =======================
+
+Using git and Linux/UNIX
+------------------------
 
 In order to use the library, first clone it::
 
@@ -22,11 +41,20 @@ Then export the PATH in your ``~/.bashrc``::
    export PYTHONPATH=${COMP_CHEM_PATH}/external:$PYTHONPATH
    export PYTHONPATH=${COMP_CHEM_PATH}/src:$PYTHONPATH
 
+Using pip
+---------
+
+pip is the standard Python package manager. 
+To install ``comp_chem_py`` with pip:: 
+
+   pip install comp_chem_py
+
+This will install the ``comp_chem_py`` package with all available dependencies as regular pip controlled packages.
 
 Documentation
 =============
 
-* Please take a look at the code `documentation <http://comp_chem_py.readthedocs.io/en/latest/>`_ for more details. 
+Please take a look at the code `documentation <http://comp_chem_py.readthedocs.io/en/latest/>`_ for more details. 
 
 
 .. todo::
@@ -39,4 +67,19 @@ Documentation
    #. Add the ebsel package into setup.py using the git repo as,
          dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
 
+.. _contact:
+
+Contact
+=======
+
+* Pablo Baudin
+* Scientific collatoborator at `LCBC EPFL <https://lcbc.epfl.ch>`_.
+* `pablo.baudin@epfl.ch <pablo.baudin@epfl.ch>`_
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
