@@ -32,6 +32,7 @@ scripts=[
     ]
 
 # Other imported modules that I probably don't need to specify here...
+#'MySQLdb',
 #'itertools',
 #'tkinter',
 #'Tkinter',
