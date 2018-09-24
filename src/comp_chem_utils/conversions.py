@@ -34,6 +34,21 @@ AU_TO_JOULES = 2.0*const.value('rydberg')*const.value('planck')*const.value('lig
     E_{h} = 2 R_\\infty h c
 """
 
+CAL_TO_JOULES = 4.184
+"""Energy conversion from cal to J.
+
+1 calorie is defined as the amount of heat energy needed to raise 
+the temperature of one gram of water by one degree Celsius at a 
+pressure of one atmosphere.
+The thermochemical calorie (used here) is defined to be exactly 4.184 J.
+"""
+
+KCALMOL_TO_JOULES = 1.0e3 * CAL_TO_JOULES / const.value('avogadro')
+"""Energy conversion from kcal.mol-1 to J.
+
+From the definition of the calorie.
+"""
+
 
 # Time conversion
 AU_TO_S = const.value('dirac') / AU_TO_JOULES
@@ -110,6 +125,8 @@ convert_to_joules = {
         'ENERGY: J': 1.0,
         'ENERGY: eV': EV_TO_JOULES,
         'ENERGY: a.u.': AU_TO_JOULES,
+        'ENERGY: cal': CAL_TO_JOULES,
+        'ENERGY: kcal.mol-1': KCALMOL_TO_JOULES,
         'FREQ: s-1': const.value('planck'),
         'ANG. FREQ: s-1': const.value('dirac'), # hbar
         'WAVE NUMBER: cm-1': 1.0e2*const.value('lightvel')*const.value('planck'),
