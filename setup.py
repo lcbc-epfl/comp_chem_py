@@ -6,6 +6,11 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
+def write_requirements(dependencies):
+    with open('requirements.txt') as f:
+        for p in dependencies:
+            f.write(p+'\n')
+
 packages=[
         'comp_chem_utils',
         'cpmd_scripts',
@@ -48,6 +53,8 @@ dependencies=[
         #'math',
         #'subprocess',
     ]
+
+write_requirements(dependencies)
 
 classifiers=[
         'Development Status :: 3 - Alpha',
