@@ -76,10 +76,3 @@ Contact
 * Scientific collatoborator at `LCBC EPFL <https://lcbc.epfl.ch>`_.
 * `pablo.baudin@epfl.ch <pablo.baudin@epfl.ch>`_
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
