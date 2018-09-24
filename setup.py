@@ -7,7 +7,7 @@ def readme():
         return f.read()
 
 def write_requirements(dependencies):
-    with open('requirements.txt') as f:
+    with open('requirements.txt','w') as f:
         for p in dependencies:
             f.write(p+'\n')
 
