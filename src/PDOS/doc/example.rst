@@ -37,10 +37,10 @@ Proceed as follows,
     Convolution of data done!
 
 #. Finally, a window should pop up containing a graph of the DOS and PDOS of the nitrogen molecule.
-  By zooming on the HOMO-LUMO gap region you should see a similar plot as the one in the test 
-  directory denoted ``N2_PDOS.png``. This figure has been produced by gathering the AOs with sigma 
-  symmetry under the green curve (s and pz AOs) while the blue figure represent the pi orbitals 
-  (py and pz AOs).
+   By zooming on the HOMO-LUMO gap region you should see a similar plot as the one in the test 
+   directory denoted ``N2_PDOS.png``. This figure has been produced by gathering the AOs with sigma 
+   symmetry under the green curve (s and pz AOs) while the blue figure represent the pi orbitals 
+   (py and pz AOs).
 
 
 

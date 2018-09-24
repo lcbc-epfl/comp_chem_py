@@ -1,16 +1,6 @@
 PDOS code documentation
 -----------------------
 
-Main program
-************
-
-.. automodule:: PDOS.PDOS
-
-Graphical interface
-*******************
-
-.. automodule:: PDOS.PDOS_GUI
-
 Module: PDOS
 ************
 
