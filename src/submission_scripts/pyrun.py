@@ -214,8 +214,7 @@ def read_input():
         print e
         show_usage()
 
-    return PRG,JOB,VRS,INP,OUT,WRK,SCR,BSH,NOX,NOV,
-        MAIL,SLUR,time,nodes,partition
+    return PRG,JOB,VRS,INP,OUT,WRK,SCR,BSH,NOX,NOV,MAIL,SLUR,time,nodes,partition
     
 
 def check_input(PRG,JOB,SCR,BSH,NOV):
@@ -270,6 +269,7 @@ def create_submission_script(JOB, PRG, WRK, SCR, INP, OUT, MAIL):
 
     template = get_file_as_list(script_name, raw=True)
 
+    nlines = []
     for line in template:
     
         # add current line to new bash script
@@ -315,8 +315,7 @@ def create_submission_script(JOB, PRG, WRK, SCR, INP, OUT, MAIL):
 if __name__ == "__main__":
 
     # read input line or file
-    PRG,JOB,VRS,INP,OUT,WRK,SCR,BSH,NOX,NOV, 
-        MAIL,SLUR,time,nodes,partition = read_input()
+    PRG,JOB,VRS,INP,OUT,WRK,SCR,BSH,NOX,NOV,MAIL,SLUR,time,nodes,partition = read_input()
 
     # sanity check on input
     PRG,JOB,SCR,BSH,NOV = check_input(PRG,JOB,SCR,BSH,NOV)
