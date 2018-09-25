@@ -29,13 +29,13 @@ GaussSum to that of PDOS.py is,
 where FWHM is the full width at half maximum.
 For example of applications see [Wawire2013a]_ and [Magero2017]_.
 
-.. include:: ../src/PDOS/doc/pdos.rst
-.. include:: ../src/PDOS/doc/gaussian.rst
-.. include:: ../src/PDOS/doc/running.rst
-.. include:: ../src/PDOS/doc/example.rst
-.. include:: ../src/PDOS/doc/display.rst
+.. include:: ../src/PDOS/docs/pdos.rst
+.. include:: ../src/PDOS/docs/gaussian.rst
+.. include:: ../src/PDOS/docs/running.rst
+.. include:: ../src/PDOS/docs/example.rst
+.. include:: ../src/PDOS/docs/display.rst
 ..
-.. include:: ../src/PDOS/doc/code.rst
+.. include:: ../src/PDOS/docs/code.rst
 
 References
 ----------
