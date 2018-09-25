@@ -28,6 +28,7 @@ scripts=[
         'bin/plot_PES',
         'bin/pyrun',
         'bin/select_state',
+        'bin/submit_job.sh',
         'bin/truncate_solvent',
     ]
 
