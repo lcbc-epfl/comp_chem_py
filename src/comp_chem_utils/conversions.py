@@ -52,16 +52,17 @@ From the definition of the calorie.
 
 # Time conversion
 AU_TO_S = const.value('dirac') / AU_TO_JOULES
-"""Time conversions from a.u. to seconds."""
+"""Time conversion from a.u. to seconds."""
 
 AU_TO_FS = 1.0e15 * AU_TO_S
-"""Time conversions from a.u. to femto-seconds."""
+"""Time conversion from a.u. to femto-seconds."""
 
 AU_TO_PS = 1.0e12 * AU_TO_S
-"""Time conversions from a.u. to pico-seconds."""
+"""Time conversion from a.u. to pico-seconds."""
 
-# Space conversion
+# Distance conversion
 BOHR_TO_ANG = 1.0e10 * const.value('bohrradius')
+"""Distance conversion from Bohr (a.u.) to Angstroms."""
 
 
 # ------------------------------------------------------------------------
