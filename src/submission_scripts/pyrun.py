@@ -9,9 +9,8 @@ import os
 import argparse
 
 from comp_chem_utils.utils import get_file_as_list
-
-from modules.program import executable, choose_exec, avail_progs
-from modules.sbatch_info import sbatch_info, sbatch_line
+from comp_chem_utils.program import executable, choose_exec, avail_progs
+from comp_chem_utils.sbatch_info import sbatch_info, sbatch_line
 
 
 # change default scratch directory depending on computer/cluster
