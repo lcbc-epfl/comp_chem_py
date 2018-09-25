@@ -34,6 +34,7 @@ For example of applications see [Wawire2013a]_ and [Magero2017]_.
 .. include:: ../src/PDOS/doc/running.rst
 .. include:: ../src/PDOS/doc/example.rst
 .. include:: ../src/PDOS/doc/display.rst
+..
 .. include:: ../src/PDOS/doc/code.rst
 
 References

@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import scipy.linalg as sc
 import numpy as np      
 
-from PDOS.modules.read_gaussian import get_gaussian_info
+from comp_chem_utils.read_gaussian import get_gaussian_info
 
 
 def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, plot_dos, dos):

@@ -11,7 +11,7 @@ except ImportError:
     # python 3
     from tkinter import *
 
-from PDOS.modules.PDOS_module import calculate_and_plot_pdos
+from PDOS.PDOS_module import calculate_and_plot_pdos
 
 
 def try_plot_from_gui():

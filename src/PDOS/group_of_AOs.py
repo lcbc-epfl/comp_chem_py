@@ -8,7 +8,7 @@ __email__="pablo.baudin@epfl.ch"
 import sys
 import argparse
 
-from PDOS.modules.read_gaussian import read_atom_and_basis, read_boolean
+from comp_chem_utils.read_gaussian import read_atom_and_basis, read_boolean
 
 
 def get_list_of_basis(atom, pos_bas):

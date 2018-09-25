@@ -9,7 +9,7 @@ __email__="pablo.baudin@epfl.ch"
 
 import argparse
 
-from PDOS.modules.PDOS_module import calculate_and_plot_pdos
+from PDOS.PDOS_module import calculate_and_plot_pdos
 
 # for compatibility with autodoc in sphinx
 if __name__ == '__main__':
