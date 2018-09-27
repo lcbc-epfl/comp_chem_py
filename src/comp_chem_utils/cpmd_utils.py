@@ -228,6 +228,11 @@ def xyz_to_cpmd_atoms(xyz_data, PPs):
     return lines
 
 
+def read_TRAJECTORY(fn):
+    """Just a wrapper to read_FTRAJECTORY."""
+    return read_FTRAJECTORY(fn, forces=False)
+
+
 def read_FTRAJECTORY(fn, forces=True):
     """
     The FTRAJECTORY file is divided into blocks of natom lines.
@@ -269,10 +274,7 @@ def read_FTRAJECTORY(fn, forces=True):
 
     # get number of atoms as (# lines) / (# steps)
     nlines = len(lines)
-    natoms = nlines/nstep
-    if nlines%nstep != 0:
-        print("WARNING: problem extracting natoms from {}".format(fn))
-        print("natoms read to be {}".format(natoms))
+    natoms = get_natoms(lines)
 
     if verbose:
         print('INFO: number of steps: {}'.format(nstep))
@@ -313,6 +315,17 @@ def read_FTRAJECTORY(fn, forces=True):
         return stp, xyz, vel, fce
     else:
         return stp, xyz, vel
+
+
+def get_natoms(lines):
+    istep = lines[0].split()[0]
+    natoms=0
+    for line in lines:
+        new_i = line.split()[0]
+        if new_i != istep:
+            return natoms
+        else:
+            natoms+=1
 
 
 ref_code = {
