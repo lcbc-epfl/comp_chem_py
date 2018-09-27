@@ -234,6 +234,7 @@ def read_FTRAJECTORY(fn, forces=True, verbose=False):
     """Read the FTRAJECTORY file from a CPMD run and export it.
     
     Three different formats can be read.
+
     #. The TRAJECTORY file (with ``forces=False``)::
 
         Column 0: step index
@@ -247,13 +248,13 @@ def read_FTRAJECTORY(fn, forces=True, verbose=False):
         Column 4-6: velocities
         Column 7-9: forces
 
-    #. And the FTRAJECTORYMTS file (with ``forces=True``, 
-    this file is not produced anymore)::
+    #. The FTRAJECTORYMTS file (with ``forces=True``, this file is not produced anymore)::
 
         Column 0: step index
         Column 1-3: low level forces
         Column 4-6: high level forces
         Column 7-9: xyz coordinates
+
     """
 
     if verbose:
@@ -374,7 +375,7 @@ def read_ENERGIES(fn, code):
 
 
 def read_SH_ENERG(fn, nstates, factor=1):
-    """read SH_ENERG.dat file and exctract info in dictionary"""
+    """Read SH_ENERG.dat file and exctract info in dictionary"""
     steps, info = read_standard_file(fn)
     
     sh_data = {}
@@ -395,9 +396,10 @@ def read_SH_ENERG(fn, nstates, factor=1):
 
 
 def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
-    """read MTS_EXC_ENERG.dat  file and exctract info in dictionary
+    """Read MTS_EXC_ENERG.dat file and exctract info in dictionary.
     
-    Either the HIGH or the LOW level info will be exctracted"""
+    Either the HIGH or the LOW level info will be exctracted.
+    """
 
     steps, info = read_standard_file(fn)
 
@@ -431,7 +433,7 @@ def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
 
 
 def get_time_info(fn):
-    """read CPMD input file and extract time step info"""
+    """Read CPMD input file and extract time step info."""
 
     # set defaults
     TIMESTEP = 5
@@ -463,6 +465,7 @@ def get_time_info(fn):
     return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH
 
 def get_natoms(lines):
+    """Get the number of atoms from a file like TRAJECTORY."""
     istep = lines[0].split()[0]
     natoms=0
     for line in lines:
