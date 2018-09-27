@@ -12,11 +12,9 @@ from comp_chem_utils.molecule_data import read_xyz_table, xyz_file
 from comp_chem_utils.utils import get_file_as_list, get_lmax_from_atomic_charge
 from comp_chem_utils.conversions import AU_TO_PS
 
-verbose = False
 
 def read_standard_file(fn):
-    """
-    Read standard trajectory file and export it.
+    """Read standard trajectory file and export it.
 
     Here a trajectory file is understood as a file arranged
     as columns in which the first column contains the
@@ -29,12 +27,12 @@ def read_standard_file(fn):
         fn (str): Name of the trajectory file.
 
     Returns:
-        steps (list): List of step indices (int) as read from
-            the first column of the trajectory file.
-
-        info (np.arrays): Contains the rest of the file as
-            an (numpy) array of floats.
-
+        steps, info 
+        
+        steps is as list of step indices (int) as read from
+        the first column of the trajectory file, while info
+        is an array (``np.array()``) of floats containing the
+        rest of the information.
     """
 
     lines = get_file_as_list(fn)
@@ -103,7 +101,8 @@ def write_TRAJEC_xyz(steps, traj_xyz, output):
             
         traj_xyz (list): xyz data. See read_TRAJEC_xyz() function.
             
-        output (str): Name (and path) fo the file in which the information will be written.
+        output (str): Name (and path) fo the file in which the 
+            information will be written.
     """
 
     with open(output, 'w') as myf:
@@ -114,24 +113,49 @@ def write_TRAJEC_xyz(steps, traj_xyz, output):
                 myf.write('{:>2} {:13.6f} {:13.6f} {:13.6f}\n'.format(*line))
     
 
-def split_TRAJEC_data(steps, traj_xyz, 
-        verbose=True, 
-        interactif=True,
-        write_xyz=False,
-        start_i=1,
-        nstep=100,
-        delta=None,
-        dt=5,
-        name=''):
+def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=False, 
+        start_i=1, nstep=100, delta=None, dt=5, name=''):
     """Select equidistant xyz data snapshot from trajectory data.
-    It does it based on a starting index step and a total
-    number of steps.
     
-    By default the maximum distance possible between two 
-    snapshots is used (delta, based on the total number of 
-    steps available
+    From a starting index, a number of snapshots and a number of 
+    steps between each snapshot. A new trajectory data is generated
+    with only a subset of steps.
 
-    The settings can also be changed interactively.
+    Args:
+        steps (list): Step indices. See read_TRAJEC_xyz() function.
+            
+        traj_xyz (list): xyz data. See read_TRAJEC_xyz() function.
+
+        verbose (bool, optional): Print more information while running.
+            Default ``is True``.
+
+        interactif (bool, optional): Let the user chose the parameters
+            interactively. Default ``is True``.
+
+        write_xyz (bool, optional): Write an xyz file to disk for every step.
+            Default ``is False``.
+
+        start_i (int, optional): Step index for the first snapshot.
+            Default is 1
+
+        nstep (int, optional): Total number of final snapshots.
+            Default is 100.
+
+        delta (int, optional): Number of steps between two snapshots.
+            Default is ``None``. It will be changed to the maximum possible
+            value depending on other paramters.
+
+        dt (int, optional): Time step used in MD [in a.u.] (to provide 
+            print out the actual time between the snapshots). Default 
+            is 5 a.u.
+
+        name (str, optional): String/Title to be used in xyz filename
+            in case ``write_xyz = True``.
+            
+    Return:
+        new_steps, new_traj_xyz
+
+        Just a subset of ``steps`` and ``traj_xyz``.
     """
 
     if verbose:
@@ -201,61 +225,37 @@ def split_TRAJEC_data(steps, traj_xyz,
     return new_steps, new_traj_xyz
 
 
-def xyz_to_cpmd_atoms(xyz_data, PPs):
-    """ return list of strings as in CPMD ATOMS section """
-
-    xyzf = xyz_file()
-    xyzf.read_from_table(xyz_data)
-
-    lines = []
-    lines.append('&ATOMS')
-    # print atom types
-    for atype in xyzf.atom_types:
-
-        lines.append('*{}_{}'.format(atype.symb, PPs))
-
-        lmax = get_lmax_from_atomic_charge(atype.charge)
-
-        lines.append('   LMAX={}'.format(lmax) )
-        lines.append('   {}'.format(atype.natoms) )
-
-        for x,y,z in zip(atype.xvals, atype.yvals, atype.zvals):
-            line = "   {:20.10f} {:20.10f} {:20.10f}".format( x, y, z )
-            lines.append( line )
-
-    lines.append('&END')
-
-    return lines
-
-
-def read_TRAJECTORY(fn):
+def read_TRAJECTORY(fn, verbose=False):
     """Just a wrapper to read_FTRAJECTORY."""
-    return read_FTRAJECTORY(fn, forces=False)
+    return read_FTRAJECTORY(fn, forces=False, verbose=verbose)
 
 
-def read_FTRAJECTORY(fn, forces=True):
+def read_FTRAJECTORY(fn, forces=True, verbose=False):
+    """Read the FTRAJECTORY file from a CPMD run and export it.
+    
+    Three different formats can be read.
+    #. The TRAJECTORY file (with ``forces=False``)::
+
+        Column 0: step index
+        Column 1-3: xyz coordinates
+        Column 4-6: velocities
+
+    #. The FTRAJECTORY file (with ``forces=True``)::
+
+        Column 0: step index
+        Column 1-3: xyz coordinates
+        Column 4-6: velocities
+        Column 7-9: forces
+
+    #. And the FTRAJECTORYMTS file (with ``forces=True``, 
+    this file is not produced anymore)::
+
+        Column 0: step index
+        Column 1-3: low level forces
+        Column 4-6: high level forces
+        Column 7-9: xyz coordinates
     """
-    The FTRAJECTORY file is divided into blocks of natom lines.
 
-    Column 0: step index
-    Column 1-3: xyz coordinates
-    Column 4-6: velocities
-    Column 7-9: forces
-
-    FTRAJECTORYMTS is a bit different:
-
-    Column 0: step index
-    Column 1-3: low level forces
-    Column 4-6: high level forces
-    Column 7-9: xyz coordinates
-
-    This function can also be used to read the TRAJECTORY file
-    which does not contain the forces (with forces=False):
-
-    Column 0: step index
-    Column 1-3: xyz coordinates
-    Column 4-6: velocities
-    """
     if verbose:
         print('INFO: entering read_FTRAJECTORY')
 
@@ -317,17 +317,6 @@ def read_FTRAJECTORY(fn, forces=True):
         return stp, xyz, vel
 
 
-def get_natoms(lines):
-    istep = lines[0].split()[0]
-    natoms=0
-    for line in lines:
-        new_i = line.split()[0]
-        if new_i != istep:
-            return natoms
-        else:
-            natoms+=1
-
-
 ref_code = {
         'steps' :-1,
         'E_kel' : 0,
@@ -340,17 +329,36 @@ ref_code = {
         }         
 
 def read_ENERGIES(fn, code):
-    """
-    Read ENERGIES file and return data based on code:
+    """Read ENERGIES file from CPMD and return data based on code:
     
-    -1 steps:  Step index
-    0 E_kel:   Electronic kinetic energy (only for CPMD)
-    1 Temp:    Temperature [K]
-    2 E_KS:    Kohn-Sham energy [a.u.]
-    3 E_cla:   Classical energy, E_KS + E_kin (constant for BOMD)
-    4 E_ham:   0 for BOMD
-    5 RMS:     Nuclear displacement wrt initial position (?)
-    6 CPU_t:   CPU time
+    Args:
+        fn (str): filename of the ENERGIES file (can include path to the file).
+
+        code: List of codes written as strings describing which information
+            should be extracted from the file. The available codes are::
+
+                'steps' : Step indices
+                'E_kel' : Electronic kinetic energy (only for CPMD)
+                'Temp'  : Temperature [K]
+                'E_KS'  : Kohn-Sham energy [a.u.]
+                'E_cla' : Classical energy, E_KS + E_kin (constant for BOMD)
+                'E_ham' : 0 for BOMD
+                'RMS'   : Nuclear displacement wrt initial position (?)
+                'CPU_t' : CPU time
+
+    Return:
+        The function returns a dictionary with keys the input codes and
+        with values an array (``np.array``) containing the corresonding
+        information as ``floats``. The exception is the value for ``'steps'``
+        which is a simple list of integers.
+
+        For example if the input codes are ``code=['steps','E_cla']``, the
+        output dictionary will have the form::
+
+            >>> read_ENERGIES('ENERGIES', ['steps','E_cla'])
+            {'E_cla': array([-546.99550862, -546.99770079, ..., -546.96549996]), 
+            'steps': [1, 2, ..., 10000]}
+
     """
 
     steps, info = read_standard_file(fn)
@@ -363,39 +371,6 @@ def read_ENERGIES(fn, code):
             to_return[i] = info[:,ref_code[i]]
 
     return to_return
-
-
-def get_time_info(fn):
-    """read CPMD input file and extract time step info"""
-
-    # set defaults
-    TIMESTEP = 5
-    MAXSTEP = 10000
-    USE_MTS = False
-    MTS_FACTOR = 1
-    MTS_TSH = 'HIGH'
-
-    # read input file
-    lines = get_file_as_list(fn)
-
-    # parse it
-    for j, line in enumerate(lines):
-        if 'TIMESTEP' in line and 'FACTOR' not in line:
-            TIMESTEP = float(lines[j+1].split()[0])
-        elif 'MAXSTEP' in line:
-            MAXSTEP = int(lines[j+1].split()[0])
-        elif 'USE_MTS' in line:
-            USE_MTS = True
-        elif 'TIMESTEP_FACTOR' in line:
-            MTS_FACTOR = int(lines[j+1].split()[0])
-        elif 'TSH' in line:
-            if 'HIGH' in line:
-                MTS_TSH = 'HIGH'
-            elif 'LOW' in line:
-                MTS_TSH = 'LOW'
-            
-
-    return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH
 
 
 def read_SH_ENERG(fn, nstates, factor=1):
@@ -453,6 +428,77 @@ def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
 
     mts_data[ 'E Driving' ] = sub_info[:,-1]
     return mts_data
+
+
+def get_time_info(fn):
+    """read CPMD input file and extract time step info"""
+
+    # set defaults
+    TIMESTEP = 5
+    MAXSTEP = 10000
+    USE_MTS = False
+    MTS_FACTOR = 1
+    MTS_TSH = 'HIGH'
+
+    # read input file
+    lines = get_file_as_list(fn)
+
+    # parse it
+    for j, line in enumerate(lines):
+        if 'TIMESTEP' in line and 'FACTOR' not in line:
+            TIMESTEP = float(lines[j+1].split()[0])
+        elif 'MAXSTEP' in line:
+            MAXSTEP = int(lines[j+1].split()[0])
+        elif 'USE_MTS' in line:
+            USE_MTS = True
+        elif 'TIMESTEP_FACTOR' in line:
+            MTS_FACTOR = int(lines[j+1].split()[0])
+        elif 'TSH' in line:
+            if 'HIGH' in line:
+                MTS_TSH = 'HIGH'
+            elif 'LOW' in line:
+                MTS_TSH = 'LOW'
+            
+
+    return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH
+
+def get_natoms(lines):
+    istep = lines[0].split()[0]
+    natoms=0
+    for line in lines:
+        new_i = line.split()[0]
+        if new_i != istep:
+            return natoms
+        else:
+            natoms+=1
+
+def xyz_to_cpmd_atoms(xyz_data, PPs):
+    """Return list of strings as in CPMD ATOMS section."""
+
+    xyzf = xyz_file()
+    xyzf.read_from_table(xyz_data)
+
+    lines = []
+    lines.append('&ATOMS')
+    # print atom types
+    for atype in xyzf.atom_types:
+
+        lines.append('*{}_{}'.format(atype.symb, PPs))
+
+        lmax = get_lmax_from_atomic_charge(atype.charge)
+
+        lines.append('   LMAX={}'.format(lmax) )
+        lines.append('   {}'.format(atype.natoms) )
+
+        for x,y,z in zip(atype.xvals, atype.yvals, atype.zvals):
+            line = "   {:20.10f} {:20.10f} {:20.10f}".format( x, y, z )
+            lines.append( line )
+
+    lines.append('&END')
+
+    return lines
+
+
 
 
 if __name__ == "__main__":
