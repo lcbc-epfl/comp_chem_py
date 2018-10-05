@@ -232,6 +232,15 @@ class atom_type(object):
             self.yvals.append(float(line[2]))
             self.zvals.append(float(line[3]))
 
+    def return_xyz_table(self):
+        table = []
+
+        for x,y,z in zip(self.xvals, self.yvals, self.zvals):
+            line = [self.symb, x, y, z ]
+            table.append( line )
+
+        return table
+
     def output(self,mol=False):
         """ return list of strings as in mol file (Atomtypes section) """
         lines = []

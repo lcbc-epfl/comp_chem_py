@@ -2,7 +2,7 @@
 """Functions and constants to convert quantities from and to different units.
 
 When executed directly, calls the two test functions:
-    
+
 * :py:func:`~comp_chem_utils.print_constants`
 * :py:func:`~comp_chem_utils.test_conversion`
 """
@@ -19,9 +19,9 @@ import comp_chem_utils.physcon as const
 EV_TO_JOULES = const.value('charge-e')
 """Energy conversion from eV to J.
 
-By definition an electron-volt is the amount of energy gained (or lost) 
-by the charge of a single electron moving across an electric potential difference 
-of one volt. So 1 eV is 1 volt (1 joule per coulomb, 1 J/C) multiplied by the 
+By definition an electron-volt is the amount of energy gained (or lost)
+by the charge of a single electron moving across an electric potential difference
+of one volt. So 1 eV is 1 volt (1 joule per coulomb, 1 J/C) multiplied by the
 elementary charge.
 """
 
@@ -37,8 +37,8 @@ AU_TO_JOULES = 2.0*const.value('rydberg')*const.value('planck')*const.value('lig
 CAL_TO_JOULES = 4.184
 """Energy conversion from cal to J.
 
-1 calorie is defined as the amount of heat energy needed to raise 
-the temperature of one gram of water by one degree Celsius at a 
+1 calorie is defined as the amount of heat energy needed to raise
+the temperature of one gram of water by one degree Celsius at a
 pressure of one atmosphere.
 The thermochemical calorie (used here) is defined to be exactly 4.184 J.
 """
@@ -74,7 +74,7 @@ BOHR_TO_ANG = 1.0e10 * const.value('bohrradius')
 # in the conventionally used units [M-1 . cm-1],
 # we follow the following procedure:
 #
-# The spectral function S(w) is the sum over states of products 
+# The spectral function S(w) is the sum over states of products
 # of a unitless oscillator strength and a line shape function.
 # The line shape function is expressed in inverse frequency units (seconds).
 # Or more generally in the reciprocal units of the excitation energies.
@@ -82,7 +82,7 @@ BOHR_TO_ANG = 1.0e10 * const.value('bohrradius')
 # The absorption cross section sigma(w) can be expressed in [Angstroms^2] as
 # sigma(w) = SPEC_TO_SIGMA * S(w)
 SPEC_TO_SIGMA = 1.0e20 * np.pi * const.value('charge-e') * const.value('charge-e') / ( 2.0 * const.value('mass-e') * const.value('lightvel') * const.value('elec-const'))
-"""Conversion constant  between a spectral function ``S`` expressed in seconds (reciprocal 
+"""Conversion constant  between a spectral function ``S`` expressed in seconds (reciprocal
 angular frequency unit) and the absorption cross section ``\sigma`` expressed in ``Angstroms^2``.
 
 .. math::
@@ -99,7 +99,7 @@ For more details see the documentation of the :py:mod:`~comp_chem_utils.spectrum
 # The extinction coefficient is then obtained in [M-1 . cm-1] as
 # eps(w) = SIGMA_TO_EPS * sigma(w)
 SIGMA_TO_EPS = 1.0e-16 * 1.0e-3 * const.value('avogadro') / np.log(10.0)
-"""Conversion constant between an absorption cross section ``\sigma`` expressed in ``Angstroms^2`` 
+"""Conversion constant between an absorption cross section ``\sigma`` expressed in ``Angstroms^2``
 and the extinction coefficient expressed in ``M^{-1} . cm^{-1}``.
 
 .. math::
@@ -136,14 +136,14 @@ convert_to_joules = {
 
 def convert(X, from_u, to_u):
     """Convert the energy value ``X`` from the unit ``from_u`` to the unit ``to_u``.
-    
+
     Args:
         X (float): Energy value to convert.
-        from_u (str): Unit of the input energy value ``X`` given as one 
+        from_u (str): Unit of the input energy value ``X`` given as one
             of the keys of the dictionary ``convert_to_joules``.
-        to_u (str): Unit of the output energy value ``X`` given as one 
+        to_u (str): Unit of the output energy value ``X`` given as one
             of the keys of the dictionary ``convert_to_joules``.
-            
+
     Returns:
         The ``X`` value is returned expressed in the ``to_u`` unit.
 

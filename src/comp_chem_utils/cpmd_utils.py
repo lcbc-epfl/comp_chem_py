@@ -27,8 +27,8 @@ def read_standard_file(fn):
         fn (str): Name of the trajectory file.
 
     Returns:
-        steps, info 
-        
+        steps, info
+
         steps is as list of step indices (int) as read from
         the first column of the trajectory file, while info
         is an array (``np.array()``) of floats containing the
@@ -49,7 +49,7 @@ def read_standard_file(fn):
 
 def read_TRAJEC_xyz(fn):
     """Read TRAJEC.xyz file and export it.
-    
+
     An xyz type information is read for each step in the trajectory file,
     where xyz info is assumed to have the following format::
 
@@ -65,8 +65,8 @@ def read_TRAJEC_xyz(fn):
 
     Returns:
         steps, traj_xyz
-        
-        steps (list): List of step indices (int) as read from 
+
+        steps (list): List of step indices (int) as read from
             the title line of each xyz_data block.
 
         traj_xyz (list): List of xyz_data blocks. Each block
@@ -78,8 +78,8 @@ def read_TRAJEC_xyz(fn):
 
     lines = get_file_as_list(fn)
     natoms = int(lines[0])
-    
-    # 1 xyz_data consist of natoms lines plus the two first lines (natoms + step index) 
+
+    # 1 xyz_data consist of natoms lines plus the two first lines (natoms + step index)
     traj_xyz = []
     steps = []
     for xyz_data in (lines[x:x+natoms+2] for x in range(0,len(lines),natoms+2)):
@@ -89,19 +89,19 @@ def read_TRAJEC_xyz(fn):
             # each line is a list with the atom's symbol and the 3 coordinates
             traj_xyz.append( read_xyz_table(xyz_data[2:natoms+2]) )
             steps.append( int(xyz_data[1].split()[1]) )
-    
+
     return steps, traj_xyz
- 
+
 
 def write_TRAJEC_xyz(steps, traj_xyz, output):
     """Write a TRAJEC.xyz file (CPMD style) to the output file.
-    
+
     Args:
         steps (list): Step indices. See read_TRAJEC_xyz() function.
-            
+
         traj_xyz (list): xyz data. See read_TRAJEC_xyz() function.
-            
-        output (str): Name (and path) fo the file in which the 
+
+        output (str): Name (and path) fo the file in which the
             information will be written.
     """
 
@@ -110,20 +110,22 @@ def write_TRAJEC_xyz(steps, traj_xyz, output):
             myf.write('{:12d}\n'.format(len(x)))
             myf.write(' STEP:{:12d}\n'.format(s))
             for line in x:
-                myf.write('{:>2} {:13.6f} {:13.6f} {:13.6f}\n'.format(*line))
-    
+                #myf.write('{:>2} {:13.6f} {:13.6f} {:13.6f}\n'.format(*line))
+                print(line)
+                myf.write('{0[0]:<2} {0[1]:13.6f} {0[2]:13.6f} {0[3]:13.6f}\n'.format(line))
 
-def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=False, 
+
+def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=False,
         start_i=1, nstep=100, delta=None, dt=5, name=''):
     """Select equidistant xyz data snapshot from trajectory data.
-    
-    From a starting index, a number of snapshots and a number of 
+
+    From a starting index, a number of snapshots and a number of
     steps between each snapshot. A new trajectory data is generated
     with only a subset of steps.
 
     Args:
         steps (list): Step indices. See read_TRAJEC_xyz() function.
-            
+
         traj_xyz (list): xyz data. See read_TRAJEC_xyz() function.
 
         verbose (bool, optional): Print more information while running.
@@ -145,13 +147,13 @@ def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=
             Default is ``None``. It will be changed to the maximum possible
             value depending on other paramters.
 
-        dt (int, optional): Time step used in MD [in a.u.] (to provide 
-            print out the actual time between the snapshots). Default 
+        dt (int, optional): Time step used in MD [in a.u.] (to provide
+            print out the actual time between the snapshots). Default
             is 5 a.u.
 
         name (str, optional): String/Title to be used in xyz filename
             in case ``write_xyz = True``.
-            
+
     Return:
         new_steps, new_traj_xyz
 
@@ -171,7 +173,7 @@ def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=
         inp = raw_input("Delta between two step indices (max and default = {}): \n".format(delta))
         if inp:
             delta = int(inp)
-        
+
         dt = float( raw_input("Time step used in MD [in a.u.] (to provide time between snapshots): \n"))
         write_xyz = raw_input("Write xyz file ? [y/n]\n").strip().lower() == 'y'
 
@@ -210,14 +212,14 @@ def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=
     new_traj_xyz = []
     new_steps = []
     for i in range(start_i, stop_i, delta):
-    
+
         new_steps.append( steps[i] )
         new_traj_xyz.append( traj_xyz[i] )
-    
+
         # create xyz file
         if write_xyz:
             fname = '{:010d}_{}.xyz'.format(new_steps[-1], name)
-    
+
             xyzf = xyz_file()
             xyzf.read_from_table(new_traj_xyz[-1], title=name)
             xyzf.out_to_file(fname=fname)
@@ -232,7 +234,7 @@ def read_TRAJECTORY(fn, verbose=False):
 
 def read_FTRAJECTORY(fn, forces=True, verbose=False):
     """Read the FTRAJECTORY file from a CPMD run and export it.
-    
+
     Three different formats can be read.
 
     #. The TRAJECTORY file (with ``forces=False``)::
@@ -286,7 +288,7 @@ def read_FTRAJECTORY(fn, forces=True, verbose=False):
     if verbose:
         print('INFO: blocks read')
 
-    
+
     for blk in blocks:
 
         # step index from first column of first line in block
@@ -327,11 +329,11 @@ ref_code = {
         'E_ham' : 4,
         'RMS'   : 5,
         'CPU_t' : 6
-        }         
+        }
 
 def read_ENERGIES(fn, code):
     """Read ENERGIES file from CPMD and return data based on code:
-    
+
     Args:
         fn (str): filename of the ENERGIES file (can include path to the file).
 
@@ -357,7 +359,7 @@ def read_ENERGIES(fn, code):
         output dictionary will have the form::
 
             >>> read_ENERGIES('ENERGIES', ['steps','E_cla'])
-            {'E_cla': array([-546.99550862, -546.99770079, ..., -546.96549996]), 
+            {'E_cla': array([-546.99550862, -546.99770079, ..., -546.96549996]),
             'steps': [1, 2, ..., 10000]}
 
     """
@@ -377,7 +379,7 @@ def read_ENERGIES(fn, code):
 def read_SH_ENERG(fn, nstates, factor=1):
     """Read SH_ENERG.dat file and exctract info in dictionary"""
     steps, info = read_standard_file(fn)
-    
+
     sh_data = {}
     sh_data['steps'] = [ x*factor for x in steps ]
 
@@ -397,7 +399,7 @@ def read_SH_ENERG(fn, nstates, factor=1):
 
 def read_MTS_EXC_ENERG(fn, nstates, MTS_FACTOR, HIGH):
     """Read MTS_EXC_ENERG.dat file and exctract info in dictionary.
-    
+
     Either the HIGH or the LOW level info will be exctracted.
     """
 
@@ -460,7 +462,6 @@ def get_time_info(fn):
                 MTS_TSH = 'HIGH'
             elif 'LOW' in line:
                 MTS_TSH = 'LOW'
-            
 
     return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH
 

@@ -2,7 +2,7 @@
 """Collection of simple functions useful in computational chemistry scripting.
 
 Many of the following functions are used to make operations on xyz coordinates
-of molecular structure. When refering to ``xyz_data`` bellow, the following 
+of molecular structure. When refering to ``xyz_data`` bellow, the following
 structures (also used in :py:mod:`~comp_chem_utils.molecule_data`) is assumed::
 
     atom 1 label  and corresponding xyz coordinate
@@ -10,7 +10,7 @@ structures (also used in :py:mod:`~comp_chem_utils.molecule_data`) is assumed::
     : : :
     atom N label  and corresponding xyz coordinate
 
-For example the ``xyz_data`` of a Hydrogen molecule along the z-axis 
+For example the ``xyz_data`` of a Hydrogen molecule along the z-axis
 should be passed as::
 
     >>> xyz_data
@@ -25,8 +25,41 @@ __email__="pablo.baudin@epfl.ch"
 import os
 import shutil
 import numpy as np
+from scipy.spatial.distance import pdist
 
 from comp_chem_utils.periodic import element
+
+
+def vel_auto_corr(vel, max_corr_index, tstep):
+    """Calculate velocity autocorrelation function.
+
+    Args:
+        vel (list): The velocities along the trajectory are given as
+            a list of ``np.array()`` of dimensions N_atoms . 3.
+
+        max_corr_index (int): Maximum number of steps to consider
+            for the auto correlation function. In other words, it
+            corresponds to the number of points in the output function.
+    """
+
+    max_step_index = len(vel) - max_corr_index
+    natoms = vel[0].shape[0]
+
+    G = np.zeros((max_corr_index), dtype='float64')
+
+
+    for itau in range(max_corr_index):
+        for it in range(max_step_index):
+            #for i in range(natoms):
+            #    G[itau] += np.dot(vel[it][i,:], vel[it+itau][i,:])
+
+            G[itau] += np.trace(np.dot(vel[it],np.transpose(vel[it+itau])))
+
+    G = G / (natoms * max_corr_index * tstep)
+    xpts = np.arange(max_corr_index)
+    xpts = xpts * tstep
+
+    return xpts, G
 
 
 def get_lmax_from_atomic_charge(charge):
@@ -61,7 +94,7 @@ def get_file_as_list(filename, raw=False):
 
     Args:
         filename (str): Name of the file to read.
-        raw (bool, optional): To return the file as it is, 
+        raw (bool, optional): To return the file as it is,
             i.e. with comments and blank lines. Default
             is ``raw=False``.
 
@@ -76,7 +109,7 @@ def get_file_as_list(filename, raw=False):
             else:
                 # remove empty lines
                 if line.strip():
-                    # remove comments 
+                    # remove comments
                     if line.strip()[0] != '#':
                         lines.append(line)
 
@@ -106,13 +139,13 @@ def make_new_dir(dirn):
 
 def center_of_mass(xyz_data):
     """Calculate center of mass of a molecular structure based on xyz coordinates.
-    
+
     Args:
         xyz_data (list): xyz atomic coordinates arranged as described above.
-            
+
     Returns:
-        3-dimensional ``np.array()`` containing the xyz coordinates of the 
-        center of mass of the molecular structure. The unit of the center of mass 
+        3-dimensional ``np.array()`` containing the xyz coordinates of the
+        center of mass of the molecular structure. The unit of the center of mass
         matches the xyz input units (usually Angstroms).
     """
 
@@ -145,7 +178,7 @@ def change_vector_norm(fix, mob, R):
     Returns:
         The new mobile position as an ``np.array()`` of dimenssion 3.
     """
-    
+
     unit = mob - fix
     unit = unit/np.linalg.norm(unit)
 
@@ -155,17 +188,17 @@ def change_vector_norm(fix, mob, R):
 
 def get_rmsd(xyz_data1, xyz_data2):
     """Calculate RMSD between two sets of coordinates.
-    
+
     The Root-mean-square deviation of atomic positions is calculated as
 
-    .. math:: 
+    .. math::
         RMSD = \\sqrt{ \\frac{1}{N} \\sum_{i=1}^N \\delta_{i}^{2} }
 
     Where ``\delta_i`` is the distance between atom i in ``xyz_data1`` and in
     ``xyz_data2``.
 
     Args:
-        xyz_data1 (list): List of atomic coordinates for the first structure 
+        xyz_data1 (list): List of atomic coordinates for the first structure
             arranged as described above for xyz_data.
         xyz_data2 (list): Like ``xyz_data1`` but for the second structure.
 
@@ -185,7 +218,7 @@ def get_rmsd(xyz_data1, xyz_data2):
     return np.sqrt(rmsd)
 
 
-def get_distance(xyz_data, atoms):
+def get_distance(xyz_data, atoms, box_size=None):
     """Calculate distance between two atoms in xyz_data.
 
     Args:
@@ -202,7 +235,86 @@ def get_distance(xyz_data, atoms):
     coord2 = np.array([xyz_data[atoms[1]][x] for x in range(1,4)])
     vector = coord2 - coord1
 
+    if box_size:
+       for i,x in enumerate(vector):
+          if abs(x) > box_size/2.0:
+             vector[i] = box_size - abs(x)
+
     return np.linalg.norm(vector)
+
+
+def get_distance_matrix(xyz_data, box_size=None):
+
+   # make np.array
+   natoms = len(xyz_data)
+   coord = np.zeros((natoms,3), dtype='float')
+   for i,line in enumerate(xyz_data):
+      coord[i,:] = line[1:]
+
+   if box_size:
+      npairs = natoms * (natoms - 1)
+      matrix = np.zeros((npairs,3), dtype='float')
+
+      for i in range(natoms):
+         for j in range(i+1,natoms):
+            ij = i + (j-1)*natoms
+
+            matrix[ij,:] = coord[i,:] - coord[j,:]
+
+      # find out which element to shift:
+      # basically shift is an array of same shape as matrix
+      # with zeros every where except where the elements of
+      # matrix are larger than box_size/2.0
+      # in that case shift as the value box_size
+      shift = box_size * (matrix > box_size/2.0).astype(int)
+
+      # we can now shift the matrix as follows:
+      matrix = abs(shift - matrix)
+
+      # and get the distances...
+      matrix = np.linalg.norm(matrix, axis=1)
+
+   else:
+      matrix = pdist(coord)
+
+   return matrix
+
+def get_distance_matrix_2(xyz_data1, xyz_data2, box_size=None):
+   # repeat as above for 2 different sets of coordinates
+   nat1 = len(xyz_data1)
+   coord1 = np.zeros((nat1,3), dtype='float')
+   for i,line in enumerate(xyz_data1):
+      coord1[i,:] = line[1:]
+
+   nat2 = len(xyz_data2)
+   coord2 = np.zeros((nat2,3), dtype='float')
+   for i,line in enumerate(xyz_data2):
+      coord2[i,:] = line[1:]
+
+   if box_size:
+      matrix = np.zeros((nat1,nat2,3), dtype='float')
+
+      for i in range(nat1):
+         for j in range(nat2):
+            matrix[i,j,:] = coord[i,:] - coord[j,:]
+
+      # find out which element to shift:
+      # basically shift is an array of same shape as matrix
+      # with zeros every where except where the elements of
+      # matrix are larger than box_size/2.0
+      # in that case shift as the value box_size
+      shift = box_size * (matrix > box_size/2.0).astype(int)
+
+      # we can now shift the matrix as follows:
+      matrix = abs(shift - matrix)
+
+      # and get the distances...
+      matrix = np.linalg.norm(matrix, axis=2)
+
+   else:
+      matrix = cdist(coord1, coord2)
+
+   return matrix
 
 def get_angle(xyz_data, atoms):
     """Calculate angle between three atoms in xyz_data.

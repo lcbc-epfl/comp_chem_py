@@ -23,11 +23,9 @@ that can be usefull in computational chemistry.
 The package evolves with my needs in the field.
 Feel free to re-use and modify as you wish and :ref:`contact` me if you have any question or comment.
 
-Contents:
----------
-
 .. toctree::
    :maxdepth: 2
+   :caption: Contents:
 
    comp_chem_utils
    PDOS
