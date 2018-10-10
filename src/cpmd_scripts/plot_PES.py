@@ -108,7 +108,8 @@ if __name__ == '__main__':
                e_codes = ['steps']
                e_codes.extend( raw_input("").split() )
            
-               data['ENERGIES'] = read_ENERGIES(energies, e_codes)
+
+               data['ENERGIES'] = read_ENERGIES(energies, e_codes, MTS_FACTOR, HIGH=True)
            
                # add time step info
                data['ENERGIES']['time_step'] = TIMESTEP

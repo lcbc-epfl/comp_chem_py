@@ -331,7 +331,7 @@ ref_code = {
         'CPU_t' : 6
         }
 
-def read_ENERGIES(fn, code):
+def read_ENERGIES(fn, code, factor=1, HIGH=True):
     """Read ENERGIES file from CPMD and return data based on code:
 
     Args:
@@ -349,6 +349,16 @@ def read_ENERGIES(fn, code):
                 'RMS'   : Nuclear displacement wrt initial position (?)
                 'CPU_t' : CPU time
 
+        factor (int): Integer factor used to skip some information. E.g. for 
+            an MTS calculation the high level information can be extracted by 
+            setting factor equals to the MTS factor used in the calculation.
+            Default value is 1 (every time step info is extracted).
+
+        HIGH (bool): define wether to extract the information every ``factor``
+            step (this is default, `HIGH=True`) or the negative counter part
+            meaning the info is extracted for every step except every factor
+            steps `HIGH=False`.
+
     Return:
         The function returns a dictionary with keys the input codes and
         with values an array (``np.array``) containing the corresonding
@@ -365,13 +375,24 @@ def read_ENERGIES(fn, code):
     """
 
     steps, info = read_standard_file(fn)
+    myrange = range(factor-1,len(steps),factor)
 
     to_return = {}
     for i in code:
-        if i=='steps':
-            to_return[i] = steps
+        if HIGH:
+            # extract information every factor steps
+            if i=='steps':
+                to_return[i] = [steps[j] for j in myrange]
+            else:
+                l = info[:,ref_code[i]]
+                to_return[i] = [l[j] for j in myrange]
         else:
-            to_return[i] = info[:,ref_code[i]]
+            # extract negative info (i.e. all except every factor steps)
+            if i=='steps':
+                to_return[i] = [steps[j] for j in range(len(steps)) if j not in myrange ]
+            else:
+                l = info[:,ref_code[i]]
+                to_return[i] = [l[j] for j in range(len(l)) if j not in myrange]
 
     return to_return
 
