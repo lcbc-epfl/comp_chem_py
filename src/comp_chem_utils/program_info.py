@@ -43,6 +43,9 @@ class executable(object):
             elif self.version=='FIDIS TDMTS':
                 exe = '/home/pbaudin/cpmd_td_mts/CPMD/bin_intel/bin/cpmd.x'
 
+            elif self.version=='ML PLAYGROUND':
+                exe = '/home/pbaudin/Work/MTS_CPMD/cpmd_porting/CPMD/bin_ml_playground/bin/cpmd.x'
+
             else:
                 exe = 'cpmd.x'
 
@@ -96,6 +99,8 @@ class executable(object):
             else:
                 env.append( 'module load intel/15.0.3' )
                 env.append( 'module load intelmpi/5.1.1' )
+                env.append( 'export I_MPI_WAIT_MODE=1' )
+                env.append( 'export I_MPI_PIN_DOMAIN=omp' )
 
         else:
             sys.exit('Unknowm program: {}'.format(prog) )
@@ -146,7 +151,8 @@ programs = {
     'PABLO PORTING MTS',
     'PABLO PORTING MASTER',
     'PABLO PORTING TDMTS',
-    'FIDIS TDMTS'
+    'FIDIS TDMTS',
+    'ML PLAYGROUND',
     ]
     }
 
