@@ -10,7 +10,6 @@ packages=[
         'comp_chem_utils',
         'cpmd_scripts',
         'PDOS',
-        'PDOS.modules',
         'simp_sec_quant',
     ]
 
