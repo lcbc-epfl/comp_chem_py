@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """
 simp_sec_quant: SIMPLIFICATOR FOR SECOND-QUANTIZATION EXPRESSIONS
-The simp_sec_quant.py file contains a set of classes (objects) that allows 
+The simp_sec_quant.py file contains a set of classes (objects) that allows
 to construct second quantization expressions with a Fock operator
 and a fluctuation potential and spin-free molecular orbitals (closed-shell).
 
-The created expressions are similar to the one derived in Chapter 13 
+The created expressions are similar to the one derived in Chapter 13
 of the Molecular electronic structure theory book by Helgaker.
 
 The expressions can then be simplified to expressions that can be implemented
@@ -13,7 +13,7 @@ in standard quantum chemistry packages.
 
 To see examples of usage look into ${comp_chem_py}/tests/expressions.py
 
-TODO: 
+TODO:
    - add triple and quadruple permutations
    - add inner product with doubly excited determinant
 """
@@ -22,34 +22,14 @@ __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
 import itertools
-
-iuns_orb = 0
-def uns_orb():
-    """ return new index for unspecified orbital and increase counter """
-    global iuns_orb
-    iuns_orb += 1
-    return 'u_' + str( iuns_orb )
-
-iocc_orb = 0
-def occ_orb():
-    """ return new index for occupied orbital and increase counter """
-    global iocc_orb 
-    iocc_orb += 1
-    return 'o_' + str( iocc_orb )
-
-ivir_orb = 0
-def vir_orb():
-    """ return new index for virtual orbital and increase counter """
-    global ivir_orb
-    ivir_orb += 1
-    return 'v_' + str( ivir_orb )
-
+from utils import *
+from operators import *
 
 #------------------------------------------------------------------------------
 class expression(object):
     """ an expression is defined as a sum of terms"""
 
-    def __init__(self, terms): 
+    def __init__(self, terms):
         # terms must be a list of terms:
         if any(type(t) is not term for t in terms):
             raise Exception("wrong type in terms")
@@ -70,7 +50,7 @@ class expression(object):
             if type(new) is term:
                 newterms.append( new )
             elif type(new) is expression:
-                newterms += new.terms 
+                newterms += new.terms
             else:
                 raise Exception("this should not happen")
         return expression( newterms )
@@ -98,14 +78,14 @@ class expression(object):
 
     def output(self):
         """ return printable latex string corresponding to the expression"""
-        return ' '.join( [t.output() for t in self.terms] ) 
+        return ' '.join( [t.output() for t in self.terms] )
 
     def permute(self, index):
         """ perform permutations for the terms in the expression """
         # each term returns a sum of terms, i.e. an expression
         newexp = expression([]) # empty expression
         for t in self.terms:
-            newexp += t.permute( index ) 
+            newexp += t.permute( index )
         return newexp
 
     def rm_parenthesis(self):
@@ -135,19 +115,19 @@ class expression(object):
 class term(object):
     """ A term is a list of elmts multiplied together, with a sign in front (+ or -)."""
 
-    def __init__(self, sign='+', elmts=[]): 
+    def __init__(self, sign='+', elmts=[]):
         self.sign = sign
         self.elmts = elmts
 
         # check validity of expression
-        if self.sign is not '+' and  self.sign is not '-':
+        if self.sign not in ['+','-']:
             print "sign is",sign
-            raise Exception("wrong sign for term")
+            raise Exception("Wrong sign for term!")
 
         # the allowed elements can be of the following types:
         allowed_types = [int, float, summation, tensor, operator, el_oper, state, commutator, expression]
-        if any( type(elmt) not in allowed_types for elmt in self.elmts ):
-            raise Exception("forbidden type in term")
+        assert any( type(elmt) not in allowed_types for elmt in self.elmts ),\
+            "Forbidden type in term!"
 
 
     def simple(self):
@@ -171,7 +151,7 @@ class term(object):
     def simplify(self):
         """ simplify each element and return the result """
         # for a term to be simplified, each element must be simplified
-        # and commutators cannot be followed by elementary operators 
+        # and commutators cannot be followed by elementary operators
 
         # 1) simplify each element
         elmts1 = []
@@ -182,7 +162,7 @@ class term(object):
             else:
                 elmts1.append( elmt.simplify() )
 
-        # build expression containing a single term 
+        # build expression containing a single term
         newter = [term( sign=self.sign, elmts=elmts1)]
         newexp = expression( newter )
 
@@ -246,13 +226,14 @@ class term(object):
         #   5- a series of elementary operator
         #   6- a simplified commutator
         #   7- a single Ket state
-        
+
         numb = []
         summ = []
         tens = []
         matr = [] # elmts between bra-ket
         for elmt in self.elmts:
 
+            print type(elmt)
             if type(elmt) in [int, float]:
                 numb.append( elmt )
             elif type(elmt) is summation:
@@ -261,7 +242,7 @@ class term(object):
                 tens.append( elmt )
             elif type(elmt) in matrix_elmts:
                 matr.append( elmt )
-            else: 
+            else:
                 raise Exception("this should not happen")
 
         # multiply numbers together and have only one factor
@@ -309,7 +290,7 @@ class term(object):
                 elif i == (len(self.elmts) - 1):
                     # last element
                     newterm = term( sign=self.sign, elmts=self.elmts[:i]) * t
-                else: 
+                else:
                     # middle element
                     # self.sign should be used only once!!!
                     newterm = term( sign=self.sign, elmts=self.elmts[:i]) * t * term( sign='+', elmts=self.elmts[i+1:])
@@ -344,7 +325,7 @@ class term(object):
 
     def __mul__(self, other):
         """ multiplying a term with something else gives a term"""
-        newelmts = self.elmts 
+        newelmts = self.elmts
         if type(other) is term:
             newelmts += other.elmts
             if self.sign == other.sign:
@@ -354,13 +335,13 @@ class term(object):
         else:
             newelmts.append( other )
             sign = self.sign
-        return term(sign=sign, elmts=newelmts ) 
+        return term(sign=sign, elmts=newelmts )
 
 
     def permute(self, index):
         """ perform permutations of the indices  in the term"""
         # index is a list of tuples, e.g. index = [(a, i), (b, j)]
-        # in that case we build a dictionary idmap that maps 
+        # in that case we build a dictionary idmap that maps
         # index a -> b, i -> j, b -> a, j -> i
         # and use it to build a new expression
 
@@ -383,7 +364,7 @@ class term(object):
                     new_elmts.append( elmt )
                 else:
                     new_elmts.append( elmt.permute(idmap) )
-             
+
             exp += term(sign=self.sign, elmts=new_elmts)
 
         return exp
@@ -429,7 +410,7 @@ class term(object):
                 break
 
             newelmts.append( elmt )
-        
+
         # simplify the term to get expression
         newexp = term(sign=self.sign, elmts=newelmts).simplify()
 
@@ -438,7 +419,7 @@ class term(object):
         for t in newexp.terms:
             newterm = t.contract()
             if newterm != 0:
-                newexp2 += t.contract() 
+                newexp2 += t.contract()
 
         return newexp2
 
@@ -541,13 +522,13 @@ class term(object):
 
     def delta(self, i1, i2):
         """ replace indices i1 by i2 for all elements in the term.
-        
+
         also remove summation over the i1 index"""
         # So this is basically applying a delta(i1, i2) on the term
 
         newelmts = []
         for elmt in self.elmts:
-            if type(elmt) is summation: 
+            if type(elmt) is summation:
                 # remove index from summation
                 index = [idx for idx in elmt.index if idx != i1]
                 if index:
@@ -565,35 +546,31 @@ class term(object):
 class commutator(object):
     """ A commutator consist of two elements."""
 
+
     def __init__(self,i1,i2):
         allowed_types = [operator, el_oper, commutator, expression, term]
-        if type(i1) in allowed_types:
-            self.i1 = i1
-        else:
-            raise Exception("wrong type for first argument")
-
-        if type(i2) in allowed_types:
-            self.i2 = i2
-        else:
-            raise Exception("wrong type for second argument")
+        assert type(i1) in allowed_types, "Wrong type for first argument!"
+        assert type(i2) in allowed_types, "Wrong type for second argument!"
+        self.i1 = i1
+        self.i2 = i2
 
     def __add__(self,other):
-        """ adding a commutator with something else gives an expression"""
+        """Adding a commutator with something else gives an expression."""
         # make commutator as a term and add the other stuff
         return term( elmts=[self] ) + other
 
     def __mul__(self,other):
-        """ multiplying a commutator with something else gives a term """
+        """Multiplying a commutator with something else gives a term."""
         return term( elmts=[self] ) * other
 
     def output(self):
-        """ return printable latex string"""
+        """Return printable latex string."""
         return '['+self.i1.output()+','+self.i2.output()+']'
 
     def simple(self):
-        """ is the commutator in a simplified format"""
+        """Check if the commutator is in a simplified format."""
         # commutators are simplified if the first entry is a simplified
-        # commutator or an operator or a single elementary operator and 
+        # commutator or an operator or a single elementary operator and
         # if the second entry is a single elementary operator!
         simp = False
         if type(self.i2) is el_oper:
@@ -658,7 +635,7 @@ class commutator(object):
             print "test", type(self.i1), self.i1.output()
             print "test", type(self.i2), self.i2.output()
             raise Exception("this should not happen")
-     
+
         # simplify second element
         if type(self.i2) is term:
             # use commutator identity to simplify the expression
@@ -687,7 +664,7 @@ class commutator(object):
             if not t.simple():
                 raise Exception("I do not think this should happen")
 
-            # if the term contain more than 1 elements it needs to be decomposed 
+            # if the term contain more than 1 elements it needs to be decomposed
             if  len(t.elmts) > 1:
                 # for example: [E1 E2, E3] = E1 [E2, E3] + [E1, E3] E2
                 newexp = identity2(t, self.i2).simplify()
@@ -703,13 +680,13 @@ class commutator(object):
     def vanish(self):
         """ take a single simplified commutator and apply rank reduction"""
         # commutator has the form C = [[[A,E1],E2],E3]
-        # C = 0 if the number of nested commutators (here 3) 
+        # C = 0 if the number of nested commutators (here 3)
         # is larger than twice the down rank of A
         if (self.nested() > 2*self.inner_rank()):
             return True
         else:
             return False
-    
+
 
     def permute(self, idmap):
         """ permute indices in the commutator"""
@@ -719,86 +696,15 @@ class commutator(object):
 
 
 #------------------------------------------------------------------------------
-class el_oper(object):
-    """ elementary singlet excitation operator E_pq"""
+def bra(rank=0, vir=[], occ=[]):
+    """ return a bra state of a given excitation rank"""
+    return state(rank=rank, ket=False, vir=vir, occ=occ )
 
-    def __init__(self,i1,i2):
-        if type(i1) is not str or type(i2) is not str:
-            raise Exception("wrong input for el_oper")
-        self.i1 = i1
-        self.i2 = i2
-
-    def simple(self):
-        # always simple
-        return True
-
-    def simplify(self):
-        # elementary operators are always simplified 
-        return self
-
-    def __add__(self,other):
-        """ adding an el. operator to something else gives an expression"""
-        return term( elmts=[self] ) + other
-
-    def __mul__(self,other):
-        """ an elementary operator time another one gives a term"""
-        return term( elmts=[self] ) * other
-
-    def output(self):
-        """ return printable latex string"""
-        return 'E_{' + self.i1 + self.i2 + '}'
-
-    def permute(self, idmap):
-        """ permute indices in the operator """
-        newi1, newi2 = permute([self.i1, self.i2], idmap)
-        return el_oper(newi1, newi2)
+def ket(rank=0, vir=[], occ=[]):
+    """ return a ket state of a given excitation rank"""
+    return state(rank=rank, ket=True, vir=vir, occ=occ )
 
 
-#------------------------------------------------------------------------------
-class operator(object):
-
-    def __init__(self,rank=1,name="dummy",symb="D"):
-        self.rank = rank
-        self.name = name
-        self.symb = symb
-
-        # explicit representation: F = sum_pq F_pq E_pq
-        index = []
-        elmts = []
-        for i in range(0,2*rank,2):
-            i1 = uns_orb()
-            i2 = uns_orb()
-            index.append( i1 )
-            index.append( i2 )
-            elmts.append( el_oper(i1, i2) )
-
-        # declare summation
-        self.summ = summation(index)
-        # declare tensor F_pq
-        self.tensor = tensor(index,self.symb)
-        # declare string of elementary operators
-        self.opers = term( elmts=elmts )
-
-    def simple(self):
-        # always simple
-        return True
-
-    def simplify(self):
-        # Operators are always simplified 
-        return self
-
-    def output(self):
-        return self.symb
-
-    def output_exp(self):
-        return self.summ.output() + self.tensor.output() + self.opers.output()
-
-    def permute(self, idmap):
-        """ nothing to permute here """
-        return self
-
-
-#------------------------------------------------------------------------------
 class state(object):
     """ a state can be a bra or a ket vector and has a rank.
 
@@ -845,61 +751,6 @@ class state(object):
 
 
 #------------------------------------------------------------------------------
-class tensor(object):
-
-    def __init__(self, index, symb):
-        if any(type(i) is not str for i in index):
-            raise Exception("a list of strings is needed here")
-        if type(symb) is not str:
-            raise Exception("a string is needed here")
-        self.index = index # list of indices of tensor
-        self.symb = symb   # tensor symbol
-
-    def output(self):
-        return self.symb+'_{'+''.join(self.index)+'}'
-
-    def permute(self, idmap):
-        newidx = permute(self.index, idmap)
-        return tensor(newidx, self.symb)
-
-    def replace(self, i1, i2):
-        #FIXME use permute instead!!
-        """ replace index i1 by i2 in tensor"""
-        newidx = []
-        for idx in self.index:
-            if idx == i1:
-                # replace
-                newidx.append( i2 )
-            else:
-                # copy
-                newidx.append( idx )
-        return tensor( newidx, self.symb)
-
-
-
-#------------------------------------------------------------------------------
-class summation(object):
-
-    def __init__(self, index):
-        if any(type(idx) is not str for idx in index):
-            raise Exception("wrong input for summation")
-        self.index = index # list summation indices
-
-    def output(self):
-        if not self.index: 
-            return ''
-
-        string = '\sum_{'
-        for s in self.index:
-            string += s
-        string += '}'
-        return string
-
-    def permute(self, idmap):
-        newidx = permute(self.index, idmap)
-        return summation( newidx )
-
-
 # list of elements that are already considered simplified
 simple_types = [int, float, summation, tensor, operator, el_oper, state]
 matrix_elmts = [state, el_oper, commutator]
@@ -939,11 +790,11 @@ def evaluate_rank1(comm, hf):
     if comm.nested() == 1:
         # [F,E_ai] |HF> = 2 F_ia |HF> + sum_b F_ba E_bi |HF> - sum_j F_ij E_aj |HF>
         a = comm.i2.i1
-        i = comm.i2.i2 
+        i = comm.i2.i2
         b = vir_orb()
         j = occ_orb()
 
-        # first term: 2 F_ia |HF> 
+        # first term: 2 F_ia |HF>
         tens = tensor([i, a], comm.i1.symb)
         term1 = term( elmts=[2, tens, hf] )
 
@@ -956,11 +807,11 @@ def evaluate_rank1(comm, hf):
         tens = tensor([i, j], comm.i1.symb)
         oper = el_oper(a, j)
         term3 = term( sign='-', elmts=[summation([j]), tens, oper, hf] )
-        
+
         return term1 + term2 + term3
 
     elif comm.nested() == 2:
-        # [[F,E_ai],E_bj] = - P^{ab}_{ij} F_ib E_aj |HF> 
+        # [[F,E_ai],E_bj] = - P^{ab}_{ij} F_ib E_aj |HF>
         b = comm.i2.i1
         j = comm.i2.i2
         a = comm.i1.i2.i1
@@ -997,13 +848,13 @@ def evaluate_rank2(comm, hf):
         oper = el_oper(b, j)
         term1 = term( elmts=[summation([b, j]), tens, oper, hf] )
 
-        # second term: sum_bjc g_{bjca} E_{bj} E_{ci} |HF> 
+        # second term: sum_bjc g_{bjca} E_{bj} E_{ci} |HF>
         tens = tensor([b, j, c, a], 'g')
-        oper1 = el_oper(b, j) 
+        oper1 = el_oper(b, j)
         oper2 = el_oper(c, i)
         term2 = term( elmts=[summation([b, j, c]), tens, oper1, oper2, hf] )
 
-        # third term: - sum_bjk g_{bjik} E_{bj} E_{ak} |HF> 
+        # third term: - sum_bjk g_{bjik} E_{bj} E_{ak} |HF>
         tens = tensor([b, j, i, k], 'g')
         oper1 = el_oper(b, j)
         oper2 = el_oper(a, k)
@@ -1015,8 +866,8 @@ def evaluate_rank2(comm, hf):
         # [[Phi,E_ai],E_bj] |HF> =  ...
         b = comm.i2.i1
         j = comm.i2.i2
-        a = comm.i1.i2.i1 
-        i = comm.i1.i2.i2 
+        a = comm.i1.i2.i1
+        i = comm.i1.i2.i2
         c = vir_orb()
         k = occ_orb()
         d = vir_orb()
@@ -1078,7 +929,7 @@ def evaluate_rank2(comm, hf):
         k = comm.i2.i2
         b = comm.i1.i2.i1
         j = comm.i1.i2.i2
-        a = comm.i1.i1.i2.i1 
+        a = comm.i1.i1.i2.i1
         i = comm.i1.i1.i2.i2
         d = vir_orb()
         l = occ_orb()
@@ -1164,36 +1015,5 @@ def identity3(A, B):
         term2 = B.elmts[0] * A
         term2.sign = B.sign
         return term1 + term2
-
-            
-#------------------------------------------------------------------------------
-def new_exc_oper():
-    """ return single excitation operator of type E_ai"""
-    i1 = vir_orb() 
-    i2 = occ_orb() 
-    return el_oper(i1, i2)
-
-
-#------------------------------------------------------------------------------
-def bra(rank=0, vir=[], occ=[]):
-    """ return a bra state of a given excitation rank"""
-    return state(rank=rank, ket=False, vir=vir, occ=occ )
-
-def ket(rank=0, vir=[], occ=[]):
-    """ return a ket state of a given excitation rank"""
-    return state(rank=rank, ket=True, vir=vir, occ=occ )
-
-#------------------------------------------------------------------------------
-def permute(idlist, idmap):
-    """replace indices in idlist based on idmap"""
-    newlist = []
-    for idx in idlist:
-
-        if idx in idmap:
-            newlist.append( idmap[idx] )
-        else:
-            newlist.append( idx )
-
-    return newlist
 
 
