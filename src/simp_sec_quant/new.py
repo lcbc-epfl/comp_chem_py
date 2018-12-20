@@ -32,6 +32,15 @@ class el_oper(object):
         # elementary operators are always simplified
         return self
 
+    def __eq__(self,other):
+        if isinstance(other, type(self)) \
+            and self.i1 == other.i1 \
+            and self.i2 == other.i2 \
+            and self.rank == other.rank:
+            return True
+        else:
+            return False
+
     def __add__(self,other):
         """Adding an el. operator to something else gives an expression."""
         return term( [self] ) + other
@@ -71,6 +80,12 @@ class delta(object):
         # elementary operators are always simplified
         return self
 
+    def __eq__(self,other):
+        if isinstance(other, type(self)) and self.i1 == other.i1 and self.i2 == other.i2:
+            return True
+        else:
+            return False
+
     def __add__(self,other):
         """Adding a detla to something else gives an expression."""
         return term( [self] ) + other
@@ -102,6 +117,12 @@ class commutator(object):
         assert type(i2) in allowed_types, "Wrong type for second argument!"
         self.i1 = i1
         self.i2 = i2
+
+    def __eq__(self,other):
+        if isinstance(other, type(self)) and self.i1 == other.i1 and self.i2 == other.i2:
+            return True
+        else:
+            return False
 
     def __add__(self,other):
         """Adding a commutator with something else gives an expression."""
@@ -161,6 +182,136 @@ class commutator(object):
         return ir
 
 
+    def reduce(self):
+        """Apply [E_mn,E_pq] = E_mq delta_pn - E_pn delta_mq."""
+
+        # check input
+        assert self.simple()
+        assert self.nested() == 1
+
+        m = self.i1.i1
+        n = self.i1.i2
+        p = self.i2.i1
+        q = self.i2.i2
+        return el_oper(m,q) * delta(p,n) - el_oper(p,n) * delta(m,q)
+
+
+    def identity1(self):
+        """[A, B1... Bn] = sum_k^n B1...Bk-1 [A,Bk] Bk+1... Bn"""
+        A = self.i1
+        B = self.i2
+        # simple checks
+        assert isinstance(B, term)
+        if len(B.elmts) == 1:
+            # nothing to do
+            return commutator(A,B.elmts[0]) * B.fac
+
+        newexp = expression( [] )
+        for i, elmt in enumerate(B.elmts):
+            if i==0:
+                newexp += commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
+
+            elif i==len(B.elmts)-1:
+                newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * B.fac
+
+            else:
+                newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
+
+        return newexp
+
+
+    def identity2(self):
+        """[A1... An, B] = sum_k^n A1...Ak-1 [Ak,B] Ak+1... An"""
+        A = self.i1
+        B = self.i2
+        # simple checks
+        assert isinstance(A, term)
+        if len(A.elmts) == 1:
+            # nothing to do
+            return commutator(A.elmts[0],B) * A.fac
+
+        newexp = expression( [] )
+        for i, elmt in enumerate(A.elmts):
+            if i==0:
+                newexp += commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
+
+            elif i==len(A.elmts)-1:
+                newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * A.fac
+
+            else:
+                newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
+
+        return newexp
+
+
+    def identity3(self, B):
+        """ Apply: [A] B = [[A],B] + B [A].
+
+        Maybe recursively if B is a chain of el_oper:
+            [A] B1 B2 = [[A], B1] B2 + B1 [A] B2
+                      = [[[A], B1], B2] + B2 [[A], B1] + B1 ( [[A],B2] + B2 [A] )
+        """
+
+        A = self
+        assert A.simple(),"identity3: commutator should be simplified!"
+        assert isinstance(B, term), "B should always be a term"
+        # we assume the term contains only el_oper
+        assert all(isinstance(elmt, el_oper) for elmt in B.elmts)
+
+        if len(B.elmts)==0:
+            # B is empty, we just return A scale with B.factor
+            print "I don't think this should happen..."
+            return A * B.fac
+
+        # Get first el_oper in B term
+        el_op = B.elmts[0]
+        if len(B.elmts)==1:
+            # B contains only one el_oper
+            # Back to simple case (conserve factor!)
+            exp = commutator(A, el_op) * B.fac  + el_op * A * B.fac
+            return exp
+
+        if len(B.elmts)>1:
+            # B contains more than one el_oper
+            # Solve recursively
+            newB = term( B.elmts[1:], fac=B.fac)
+            exp1 = commutator(A, el_op).identity3( newB )
+            exp2 = el_op * A.identity3( newB )
+            return exp1 + exp2
+
+
+    def distribute1(self):
+        """Distribute expression inside a commutator.
+
+        [A1+A2+...+An, B] = [A1,B] + [A2,B] +... [An,B]
+        """
+        A = self.i1
+        B = self.i2
+        assert isinstance(A, expression)
+        # create a new commutator for each term of the expression in A
+        newexp = expression( [] )
+        for Ai in A.terms:
+            newexp += commutator( Ai, B )
+
+        return newexp
+
+
+    def distribute2(self):
+        """Distribute expression inside a commutator.
+
+        [A, B1+B2+...+Bn] = [A,B1] + [A,B2] +... [A,Bn]
+        """
+        A = self.i1
+        B = self.i2
+        assert isinstance(B, expression)
+        # create a new commutator for each term of the expression in B
+        newexp = expression( [] )
+        for Bi in B.terms:
+            newexp += commutator( A, Bi )
+
+        return newexp
+
+
     def vanish(self):
         """ take a single simplified commutator and apply rank reduction"""
         # commutator has the form C = [[[A,E1],E2],E3]
@@ -183,10 +334,12 @@ class commutator(object):
         part1 = self.i1.simplify()
         part2 = self.i2.simplify()
 
+        newcom = commutator(part1, part2)
+
         # check if new commutator is simplified
-        if commutator(part1, part2).simple():
+        if newcom.simple():
             print "Should not happen"
-            return commutator(part1, part2)
+            return newcom
 
         if isinstance(part1, commutator) or isinstance(part1, el_oper):
             # part1 is a simplified commutator or just an el_oper
@@ -202,14 +355,14 @@ class commutator(object):
 
             elif isinstance(part2, term):
                 # use identity1 to simplify commutator
-                exp = identity1(part1, part2)
+                exp = newcom.identity1()
 
                 # return simplified new expression
                 return exp.simplify()
 
             elif isinstance(part2, expression):
                 # distribute expression in the commutator and simplify
-                exp = distribute2(part1, part2)
+                exp = newcom.distribute2()
 
                 # return simplified new expression
                 return exp.simplify()
@@ -218,14 +371,14 @@ class commutator(object):
 
         elif isinstance(part1, term):
             # use commutator identity2
-            exp = identity2(part1, part2)
+            exp = newcom.identity2()
 
             # return simplified new expression
             return exp.simplify()
 
         elif isinstance(part1, expression):
             # distribute expression and simplify
-            exp = distribute1(part1, part2)
+            exp = newcom.distribute1()
 
             # return simplified new expression
             return exp.simplify()
@@ -273,11 +426,19 @@ class expression(object):
             return self
 
         # simplify each term and return new expression
-        newterms = []
+        newexp = expression([])
         for t in self.terms:
-            newterms.append( t.simplify() )
+            newexp += t.simplify()
 
-        return expression( newterms )
+        return newexp
+
+    def __eq__(self,other):
+        """Two expressions are equals if each term is present in the other one."""
+        if isinstance(other, type(self)) \
+           and len(self.terms) == len(other.terms):
+            return all(t in other.terms for t in self.terms)
+        else:
+            return False
 
     def __mul__(self,other):
         """An expression times something else gives a term."""
@@ -441,7 +602,7 @@ class term(object):
 
         # check if it contains expressions
         if any(isinstance(elmt, expression) for elmt in self.elmts):
-            # distribute expreesions in the term
+            # distribute expresions in the term
             exp = self.rm_parenthesis()
             return exp.simplify()
 
@@ -508,7 +669,7 @@ class term(object):
                 newterm *= sub[0]
             else:
                 # identity3 return an expression
-                newterm *= identity3( sub[0], term( sub[1:] ) )
+                newterm *= sub[0].identity3( term( sub[1:] ) )
 
         # now we should be back with a term containing expressions
         # which needs to be distributed...
@@ -570,6 +731,14 @@ class term(object):
 
         return ' '.join(string)
 
+
+    def __eq__(self,other):
+        """Two terms are equal if they contains the same elements in the
+        same order and if the factors are the same."""
+        if isinstance(other, type(self)):
+            return (self.elmts == other.elmts) and (self.fac == other.fac)
+        else:
+            return False
 
     def __add__(self, other):
         """A term plus something else gives an expression."""
@@ -811,129 +980,4 @@ class term(object):
 
     #    return term( sign=self.sign, elmts=newelmts )
 
-def identity1(A, B):
-    """[A, B1... Bn] = sum_k^n B1...Bk-1 [A,Bk] Bk+1... Bn"""
 
-    # simple checks
-    assert isinstance(B, term)
-    if len(B.elmts) == 1:
-        # nothing to do
-        print "This should not happen!"
-        return commutator(A,B.elmts[0]) * B.fac
-
-    newexp = expression( [] )
-    for i, elmt in enumerate(B.elmts):
-        if i==0:
-            newexp += commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
-
-        elif i==len(B.elmts)-1:
-            newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * B.fac
-
-        else:
-            newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
-
-    return newexp
-
-
-def identity2(A, B):
-    """[A1... An, B] = sum_k^n A1...Ak-1 [Ak,B] Ak+1... An"""
-
-    # simple checks
-    assert isinstance(A, term)
-    if len(A.elmts) == 1:
-        # nothing to do
-        print "This should not happen!"
-        return commutator(A.elmts[0],B) * A.fac
-
-    newexp = expression( [] )
-    for i, elmt in enumerate(A.elmts):
-        if i==0:
-            newexp += commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
-
-        elif i==len(A.elmts)-1:
-            newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * A.fac
-
-        else:
-            newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
-
-    return newexp
-
-
-def identity3(A, B):
-
-    assert isinstance(A, commutator),"identity3: A should be a commutator!"
-    assert A.simple(),"identity3: A should be simplified!"
-
-    if isinstance(B, el_oper):
-        # very simple case: [simple] E = [[simple],E] + E [simple]
-        # The result is an expression
-        return commutator(A, B) + B * A
-
-    elif isinstance(B, term):
-        # we assume the term contains only el_oper
-        assert all(isinstance(elmt, el_oper) for elmt in B.elmts)
-
-        # we split it into el_op and newB
-        el_op = B.elmts[0]
-        if len(B.elmts)>1:
-            # B contains more than one el_oper
-            # Solve recursively
-            newB = term( B.elmts[1:], fac=B.fac)
-            exp1 = identity3( commutator(A, el_op), newB )
-            exp2 = el_op * identity3(A, newB)
-            return exp1 + exp2
-
-        else:
-            # B contains only one el_oper
-            # Back to simple case (conserve factor!)
-            exp = commutator(A, el_op) * B.fac  + el_op * A * B.fac
-            return exp
-
-    else:
-        print type(B)
-        raise Exception("Let see when this happen...")
-
-
-def distribute1(A, B):
-    """Distribute expression inside a commutator.
-
-    [A1+A2+...+An, B] = [A1,B] + [A2,B] +... [An,B]
-    """
-
-    assert isinstance(A, expression)
-
-    # create a new commutator for each term of the expression in A
-    newexp = expression( [] )
-    for Ai in A.terms:
-        newexp += commutator( Ai, B )
-
-    return newexp
-
-
-def distribute2(A, B):
-    """Distribute expression inside a commutator.
-
-    [A, B1+B2+...+Bn] = [A,B1] + [A,B2] +... [A,Bn]
-    """
-
-    assert isinstance(B, expression)
-    # create a new commutator for each term of the expression in B
-    newexp = expression( [] )
-    for Bi in B.terms:
-        newexp += commutator( A, Bi )
-
-    return newexp
-
-def rank_reduction(A):
-    """Apply [E_mn,E_pq] = E_mq delta_pn - E_pn delta_mq."""
-
-    # check input
-    assert isinstance(A, commutator)
-    assert A.simple()
-    assert A.nested() == 1
-
-    m = A.i1.i1
-    n = A.i1.i2
-    p = A.i2.i1
-    q = A.i2.i2
-    return el_oper(m,q) * delta(p,n) - el_oper(p,n) * delta(m,q)
