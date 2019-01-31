@@ -497,11 +497,16 @@ def get_natoms(lines):
         else:
             natoms+=1
 
-def xyz_to_cpmd_atoms(xyz_data, PPs):
+def xyz_to_cpmd_atoms(xyz_data=None, xyz_filename=None, PPs=None):
     """Return list of strings as in CPMD ATOMS section."""
 
     xyzf = xyz_file()
-    xyzf.read_from_table(xyz_data)
+    if xyz_data:
+        xyzf.read_from_table(xyz_data)
+    elif xyz_filename:
+        xyzf.read_xyz(xyz_filename)
+    else:
+        sys.exit('Wrong input!!')
 
     lines = []
     lines.append('&ATOMS')
@@ -524,7 +529,15 @@ def xyz_to_cpmd_atoms(xyz_data, PPs):
     return lines
 
 
+def xyz_data_to_np(xyz_data):
+    """Convert xyz_data information to a tuple (atoms, coord)
+    
+    Where atoms is a list of the atomic symbols and coord is
+    a matrix: np.array[natoms, 3]"""
 
+    atoms = [ l[0] for l in xyz_data]
+    coord = [ l[1:] for l in xyz_data]
+    return (atoms, np.array(coord))
 
 if __name__ == "__main__":
     # TODO: actually test the result of the functions

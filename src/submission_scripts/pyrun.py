@@ -232,7 +232,9 @@ def check_input():
         show_usage()
 
     if not SCR:
-        SCR = '{}/{}'.format(scr, JOB)
+        SCR = scr
+    
+    SCR = '{}/{}'.format(scr, JOB)
 
     if not BSH:
         BSH = './submit_{}.sh'.format(JOB)
