@@ -65,18 +65,18 @@ class executable(object):
 
         if self.prog==ADF:
             if self.version:
-                env.append( 'module load adf/{}'.format(self.version) ) 
+                env.append( 'module load adf/{}'.format(self.version) )
             else:
-                env.append( 'module load adf' ) 
+                env.append( 'module load adf' )
 
         elif self.prog==LSDALTON:
             env.append( 'module load intel/17.0.4' )
 
         elif self.prog==TURBO:
             if self.version:
-                env.append( 'module load turbomole/{}'.format(self.version) ) 
+                env.append( 'module load turbomole/{}'.format(self.version) )
             else:
-                env.append( 'module load turbomole' ) 
+                env.append( 'module load turbomole' )
             env.append( 'export PARA_ARCH=SMP' )
             env.append( 'export PATH=$TURBODIR/bin/em64t-unknown-linux-gnu_smp:$PATH' )
             env.append( 'export PARNODES=$np' )
@@ -169,14 +169,14 @@ programs = {
 
 
 def avail_progs():
-    print ''
-    print 'AVAILABLE PROGRAMS: VERSIONS:'
-    print '============================='
+    print('')
+    print('AVAILABLE PROGRAMS: VERSIONS:')
+    print('=============================')
     for name in programs:
-        print ''
+        print('')
         for vrs in programs[name]:
-            print '    {}: {}'.format(name, vrs)
-    print ''
+            print('    {}: {}'.format(name, vrs))
+    print('')
 
 def choose_exec():
     avail_progs()
@@ -185,16 +185,16 @@ def choose_exec():
     if prog not in programs:
         sys.exit('ERROR: program not available!')
 
-    print ''
-    print 'AVAILABLE VERSIONS:'
-    print '=================='
+    print('')
+    print('AVAILABLE VERSIONS:')
+    print('==================')
     for vrs in programs[prog]:
-        print '    {}'.format(vrs)
+        print('    {}'.format(vrs) )
 
-    print ''
+    print('')
     vrs = raw_input('ENTER SELECTED VERSION:\n')
     if vrs not in programs[prog]:
-        print 'WARNING: default version selected!'
+        print('WARNING: default version selected!')
 
     # return executable
     return executable(prog, vrs)

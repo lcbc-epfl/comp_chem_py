@@ -22,9 +22,9 @@ class sbatch_option(object):
       ]
 
    def modify_from_user(self):
-      print ''
+      print('')
       for line in self.detailed_output():
-         print line
+         print(line)
       nv = raw_input('New value (empty cancels):')
       if nv:
          self.value = nv
@@ -40,7 +40,7 @@ class sbatch_option(object):
       elif key=='mem':
          self.set( '120G' )
          self.explanation = 'e.g. 1G (default unit is MB can be change with suffix K,M,G,T)'
-         
+
       elif key=='partition':
          self.set( 'debug' )
          self.explanation = 'debug or parallel'

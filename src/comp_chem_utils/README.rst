@@ -65,12 +65,12 @@ program_info
 .. automodule:: comp_chem_utils.program_info
 
 read_gaussian
-------------
+-------------
 
 .. automodule:: comp_chem_utils.read_gaussian
 
 sbatch_info
-------------
+-----------
 
 .. automodule:: comp_chem_utils.sbatch_info
 

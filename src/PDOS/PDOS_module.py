@@ -4,9 +4,9 @@ __author__="Pablo Baudin"
 __email__="pablo.baudin@epfl.ch"
 
 
-import matplotlib.pyplot as plt 
+import matplotlib.pyplot as plt
 import scipy.linalg as sc
-import numpy as np      
+import numpy as np
 
 from comp_chem_utils.read_gaussian import get_gaussian_info
 
@@ -29,7 +29,7 @@ def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, 
 
             # plot stick at the bottom of the window
             plt.axvline(energy, 0, 0.1, color=col)
-     
+
 
     # plot the total density of states (DOS)
     # --------------------------------------
@@ -38,7 +38,7 @@ def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, 
 
         plt.plot(xpts, dos, "r:", label="DOS")
         ymax = dos.max()
-   
+
 
     # plot the partial DOS for each group
     # -----------------------------------
@@ -46,7 +46,7 @@ def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, 
 
         plt.plot(xpts, pdos[igrp], label=groupname)
         ymax = max(ymax, pdos[igrp].max())
-    
+
 
     # final touch plus show it!
     # -------------------------
@@ -73,12 +73,12 @@ def plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, 
 
 def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1, xmax=-1, plot_dos=True, mulliken=False):
     """Calculate and plot partial density of states (PDOS)
-    
-    This function read a gaussian output files containing the 
+
+    This function read a gaussian output files containing the
     necessary information for calculating total and partial
-    density of states. The DOS and PDOS are then calculated 
+    density of states. The DOS and PDOS are then calculated
     and plotted."""
-  
+
     # get gaussian info:
     #   nocc:    number of occupied orbitals (assuming closed shell)
     #   nbas:    number of basis functions (assuming #AOs = #MOs)
@@ -90,17 +90,17 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     if (mulliken):
         print("Calculating Mulliken partial charges...")
         # get partial Mulliken charges
-        # q_{alpha,i} = sum_{beta} S_{alpha,beta} C_{beta,i} C_{alpha,i}  
+        # q_{alpha,i} = sum_{beta} S_{alpha,beta} C_{beta,i} C_{alpha,i}
         part_pop = np.dot(overlap, coef)
         part_pop = np.multiply(part_pop, coef)
     else:
         print("Calculating Lowdin partial charges...")
         # get partial Lowdin charges
-        # q_{alpha,i} = sum_{beta} S_{alpha,beta}^{1/2} C_{beta,i} C_{alpha,i} S_{alpha,beta}^{1/2} 
+        # q_{alpha,i} = sum_{beta} S_{alpha,beta}^{1/2} C_{beta,i} C_{alpha,i} S_{alpha,beta}^{1/2}
         Shalf = sc.sqrtm(overlap)
         part_pop = np.dot(Shalf, coef)**2.0
-    
-    
+
+
     # Calculation of gross orbital populations
     total_pop = part_pop.sum(0) # sum over all AOs (rows=0)
 
@@ -110,10 +110,10 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     print("Reading group of AOs file: {}\n".format(group_file))
     inputfile = open(group_file,"r")
 
-    # there are different groups of orbitals, for each group we have a 
+    # there are different groups of orbitals, for each group we have a
     # groupname to which a list of atomic orbital is associated
     groups = {}
-    
+
     for line in inputfile:
         # the first line give the name of the group
         groupname = line.strip()
@@ -132,9 +132,9 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
 
         # associate list of orbitals to each group
         groups[groupname] = orbitals
-    
+
     inputfile.close()
-    
+
 
     # Define the parameters of the gaussian convolution based
     # on user inputs or predefined defaults
@@ -145,12 +145,12 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
     if (xmax - xmin) <= 0:
         xmax = (eps[-1] + 5)
         xmin = (eps[0] - 5)
-    
+
     # default is to have 100 points per eV
     if (npts <= 0):
         npts = int((xmax - xmin)*100)
 
-    # set x-values 
+    # set x-values
     xpts = np.linspace(xmin, xmax, npts)
 
     # the gaussian curve is defined as g(x) = norm * exp (- alpha * delta_x**2) where,
@@ -174,7 +174,7 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
         for iorb, pop in enumerate(total_pop):
 
             dos += pop*norm*np.exp(-alpha*(eps[iorb]-xpts)**2.0)
-    
+
 
     # calculate the partial DOS for each group
     # ----------------------------------------
@@ -198,12 +198,12 @@ def calculate_and_plot_pdos(gaussian_file, group_file, npts=0, fwhm=1.0, xmin=1,
         for iorb, pop in enumerate(my_part_pop):
 
             pdos[igrp] += pop*norm*np.exp(-alpha*(eps[iorb]-xpts)**2.0)
-        
+
     print("\nConvolution of data done!")
-    
+
 
     # make actual plots
     # -----------------
     plot_dos_and_pdos(nocc, eps, xmin, xmax, xpts, groups, pdos, gaussian_file, plot_dos, dos)
- 
+
 
