@@ -1,9 +1,29 @@
 #!/bin/usr/env python
 
-# just manipulations of el_oper and commutators
-
-from utils import uns_orb, occ_orb, vir_orb, permute
 import sys
+import copy
+
+iuns_orb = 0
+def uns_orb():
+    """ return new index for unspecified orbital and increase counter """
+    global iuns_orb
+    iuns_orb += 1
+    return 'u_{' + str( iuns_orb ) + '}'
+
+iocc_orb = 0
+def occ_orb():
+    """ return new index for occupied orbital and increase counter """
+    global iocc_orb
+    iocc_orb += 1
+    return 'o_{' + str( iocc_orb ) + '}'
+
+ivir_orb = 0
+def vir_orb():
+    """ return new index for virtual orbital and increase counter """
+    global ivir_orb
+    ivir_orb += 1
+    return 'v_{' + str( ivir_orb ) + '}'
+
 
 def new_el_oper():
     """Return a single excitation operator of type E_pq"""
@@ -12,6 +32,19 @@ def new_el_oper():
 def new_exc_oper():
     """Return a single excitation operator of type E_ai"""
     return el_oper(vir_orb(), occ_orb(), rank=0)
+
+
+def tensor(rank, fac=1.0):
+    """Create a term containing a summation and a string of elementary operators."""
+    indices = []
+    newterm = term([], fac=fac)
+    for i in range(rank):
+        newel = new_el_oper()
+        indices.append(newel.i1)
+        indices.append(newel.i2)
+        newterm *= newel
+
+    return summation( indices ) * newterm
 
 
 class el_oper(object):
@@ -95,7 +128,7 @@ class delta(object):
         return term( [self] ) - other
 
     def __mul__(self,other):
-        """An delta operator times something else gives a term."""
+        """A delta operator times something else gives a term."""
         return term( [self] ) * other
 
     def output(self):
@@ -106,6 +139,39 @@ class delta(object):
     #    """Permute indices in the operator."""
     #    newi1, newi2 = permute([self.i1, self.i2], idmap)
     #    return delta(newi1, newi2)
+
+
+class summation(object):
+
+    def __init__(self, index):
+        assert all( isinstance(idx, str) for idx in index)
+        self.index = index # list summation indices
+
+    def simple(self):
+        # always simple
+        return True
+
+    def simplify(self):
+        # elementary operators are always simplified
+        return self
+
+    def output(self):
+        if not self.index:
+            return ''
+
+        string = '\sum_{'
+        for s in self.index:
+            string += s
+        string += '}'
+        return string
+
+    def __mul__(self, other):
+        """A summation times something else gives a term."""
+        return term( [self] ) * other
+
+    #def permute(self, idmap):
+    #    newidx = permute(self.index, idmap)
+    #    return summation( newidx )
 
 
 class commutator(object):
@@ -187,13 +253,19 @@ class commutator(object):
 
         # check input
         assert self.simple()
-        assert self.nested() == 1
+        if self.nested() == 1:
 
-        m = self.i1.i1
-        n = self.i1.i2
-        p = self.i2.i1
-        q = self.i2.i2
-        return el_oper(m,q) * delta(p,n) - el_oper(p,n) * delta(m,q)
+            m = self.i1.i1
+            n = self.i1.i2
+            p = self.i2.i1
+            q = self.i2.i2
+            return el_oper(m,q) * delta(p,n) - el_oper(p,n) * delta(m,q)
+
+        else:
+            # reduce inner commutator and simplify the outer one
+            newexp = commutator(self.i1.reduce(), self.i2).simplify()
+            # return reduced expression
+            return newexp.reduce()
 
 
     def identity1(self):
@@ -202,20 +274,27 @@ class commutator(object):
         B = self.i2
         # simple checks
         assert isinstance(B, term)
-        if len(B.elmts) == 1:
+
+        # isolate factor and delta from term
+        fac_term, op_term = B.extract_delta()
+
+        if len(op_term.elmts) == 0:
+            # The commutator is zero!
+            raise Exception("This should not happen!")
+        elif len(op_term.elmts) == 1:
             # nothing to do
-            return commutator(A,B.elmts[0]) * B.fac
+            return fac_term * commutator(A,op_term.elmts[0])
 
         newexp = expression( [] )
-        for i, elmt in enumerate(B.elmts):
+        for i, elmt in enumerate(op_term.elmts):
             if i==0:
-                newexp += commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
+                newexp += fac_term * commutator(A, elmt) * term( op_term.elmts[i+1:] )
 
-            elif i==len(B.elmts)-1:
-                newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * B.fac
+            elif i==len(op_term.elmts)-1:
+                newexp += fac_term * term( op_term.elmts[0:i] ) * commutator(A, elmt)
 
             else:
-                newexp +=  term( B.elmts[0:i] ) * commutator(A, elmt) * term( B.elmts[i+1:] ) * B.fac
+                newexp += fac_term * term( op_term.elmts[0:i] ) * commutator(A, elmt) * term( op_term.elmts[i+1:] )
 
         return newexp
 
@@ -226,20 +305,27 @@ class commutator(object):
         B = self.i2
         # simple checks
         assert isinstance(A, term)
-        if len(A.elmts) == 1:
+
+        # isolate factor and delta from term
+        fac_term, op_term = A.extract_delta()
+
+        if len(op_term.elmts) == 0:
+            # The commutator is zero!
+            raise Exception("This should not happen!")
+        elif len(op_term.elmts) == 1:
             # nothing to do
-            return commutator(A.elmts[0],B) * A.fac
+            return fac_term * commutator(op_term.elmts[0],B)
 
         newexp = expression( [] )
-        for i, elmt in enumerate(A.elmts):
+        for i, elmt in enumerate(op_term.elmts):
             if i==0:
-                newexp += commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
+                newexp += fac_term * commutator(elmt, B) * term( op_term.elmts[i+1:] )
 
-            elif i==len(A.elmts)-1:
-                newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * A.fac
+            elif i==len(op_term.elmts)-1:
+                newexp +=  fac_term * term( op_term.elmts[0:i] ) * commutator(elmt, B)
 
             else:
-                newexp +=  term( A.elmts[0:i] ) * commutator(elmt, B) * term( A.elmts[i+1:] ) * A.fac
+                newexp +=  fac_term * term( op_term.elmts[0:i] ) * commutator(elmt, B) * term( op_term.elmts[i+1:] )
 
         return newexp
 
@@ -432,6 +518,15 @@ class expression(object):
 
         return newexp
 
+    def reduce(self):
+
+        # reduce each term and return new expression
+        newexp = expression([])
+        for t in self.terms:
+            newexp += t.reduce()
+
+        return newexp
+
     def __eq__(self,other):
         """Two expressions are equals if each term is present in the other one."""
         if isinstance(other, type(self)) \
@@ -446,7 +541,7 @@ class expression(object):
 
     def __sub__(self,other):
         """See __isub__."""
-        newexp = self
+        newexp = copy.deepcopy(self)
         newexp -= other
         return newexp
 
@@ -473,7 +568,7 @@ class expression(object):
 
     def __add__(self,other):
         """See __iadd__."""
-        newexp = self
+        newexp = copy.deepcopy(self)
         newexp += other
         return newexp
 
@@ -529,18 +624,11 @@ class expression(object):
 
 
 class term(object):
-    """A term is a list of elmts multiplied together with factor in front.
-
-    Possible elements include:
-        2) delta
-        2) el_oper
-        3) commutator
-        4) expressions (in parentheses)
-    """
+    """A term is a list of elmts multiplied together with factor in front."""
 
     def __init__(self, elmts, fac=1.0):
         # the allowed elements can be of the following types:
-        allowed_types = [delta, el_oper, commutator, expression]
+        allowed_types = [summation, delta, el_oper, commutator, expression]
 
         # Make clean list of elements such that it contains only allowed types
         newelmts = []
@@ -619,13 +707,14 @@ class term(object):
             return newterm.simplify()
 
 
+        fac_term, op_term = self.extract_delta()
         # At this stage we should have only terms that contain
         # simplified commutators or elementary operators!
         #
         # First we get a set of index positions for the commutators
         # and check that the term only contains commutators and el_oper
         cpos = []
-        for i, elmt in enumerate(self.elmts):
+        for i, elmt in enumerate(op_term.elmts):
             if isinstance(elmt, commutator):
                 cpos.append(i)
             elif isinstance(elmt, el_oper):
@@ -645,36 +734,46 @@ class term(object):
         #   term3 is [E,E]
         #
         # if the first element is a commutator then the first subterm is empty
-        subterms = [self.elmts[0:cpos[0]]]
+        subterms = [op_term.elmts[0:cpos[0]]]
         #
         for i, ic in enumerate(cpos):
 
             if i + 1 >= len(cpos):
                 # last commutator
-                subterms.append(self.elmts[ic:])
+                subterms.append(op_term.elmts[ic:])
 
             else:
-                subterms.append(self.elmts[ic:cpos[i+1]])
+                subterms.append(op_term.elmts[ic:cpos[i+1]])
 
         # If a subterm contains more than one elements it means its
         # a commutator followed by one ore more elementary operators
         # so we treat it with the identity3 routine.
-        newterm = term( [], fac=self.fac)
         for sub in subterms:
             if len(sub) == 0:
                 # nothing to do
                 continue
             elif len(sub) == 1:
                 # just copy the single element to the newter
-                newterm *= sub[0]
+                fac_term *= sub[0]
             else:
                 # identity3 return an expression
-                newterm *= sub[0].identity3( term( sub[1:] ) )
+                fac_term *= sub[0].identity3( term( sub[1:] ) )
 
         # now we should be back with a term containing expressions
         # which needs to be distributed...
-        return newterm.simplify()
+        return fac_term.simplify()
 
+
+    def reduce(self):
+        assert self.simple()
+        newterm = term( [], fac=self.fac)
+        for elmt in self.elmts:
+            if isinstance(elmt, commutator):
+                newterm *= elmt.reduce()
+            else:
+                newterm *= elmt
+
+        return newterm.simplify()
 
     def rm_parenthesis(self):
         """distribute whatever is inside parenthesis"""
@@ -711,18 +810,27 @@ class term(object):
 
     def output(self):
         """ return printable string for term """
+        fac_term, op_term = self.extract_delta()
         # take care of sign
-        if self.fac > 0:
+        if fac_term.fac > 0:
             string = ['+']
         else:
             string = ['-']
 
         # take care of factor
-        if abs(self.fac) != 1.0:
-            string.append(str(abs(self.fac)))
+        if abs(fac_term.fac) != 1.0:
+            string.append(str(abs(fac_term.fac)))
+
+        # put delta in front
+        for elmt in fac_term.elmts:
+            if isinstance(elmt, expression):
+                # we need to add parenthesis
+                string.append( '( '+ elmt.output() +' )' )
+            else:
+                string.append( elmt.output() )
 
         # add other elmts
-        for elmt in self.elmts:
+        for elmt in op_term.elmts:
             if isinstance(elmt, expression):
                 # we need to add parenthesis
                 string.append( '( '+ elmt.output() +' )' )
@@ -730,6 +838,23 @@ class term(object):
                 string.append( elmt.output() )
 
         return ' '.join(string)
+
+
+    def extract_delta(self):
+        """Split a term into two: one containing kronecker delta,
+        prefactor and summations and one with the rest."""
+
+        fac_term = term([], fac=self.fac)
+        op_term = term([])
+        for elmt in self.elmts:
+            if isinstance(elmt, delta):
+                fac_term *= elmt
+            elif isinstance(elmt, summation):
+                fac_term *= elmt
+            else:
+                op_term *= elmt
+
+        return fac_term, op_term
 
 
     def __eq__(self,other):
@@ -750,7 +875,7 @@ class term(object):
 
     def __mul__(self, other):
         """See __imul__"""
-        newterm = self
+        newterm = copy.deepcopy(self)
         newterm *= other
         return newterm
 
