@@ -13,7 +13,10 @@ class executable(object):
 
     def get_exe(self):
         exe=''
-        if self.prog==ADF:
+        if self.prog==LSDALTON:
+            exe = '/home/pbaudin/Work/lsdalton_2018/build_omp_intel17/lsdalton.x'
+
+        elif self.prog==ADF:
             exe = 'adf'
 
         elif self.prog==TURBO:
@@ -66,6 +69,9 @@ class executable(object):
             else:
                 env.append( 'module load adf' ) 
 
+        elif self.prog==LSDALTON:
+            env.append( 'module load intel/17.0.4' )
+
         elif self.prog==TURBO:
             if self.version:
                 env.append( 'module load turbomole/{}'.format(self.version) ) 
@@ -114,6 +120,9 @@ class executable(object):
         if self.prog==ADF:
             exec_line = '$EXE -n $np < ${job}.inp  > ${job}.out'
 
+        elif self.prog==LSDALTON:
+            exec_line = '$EXE'
+
         elif self.prog==TURBO:
             exec_line = 'dscf > ${job}.out'
 
@@ -136,11 +145,13 @@ class executable(object):
 
 # all programs and versions
 ADF='adf'
+LSDALTON='lsdalton'
 CPMD='cpmd'
 TURBO='turbo'
 
 programs = {
         ADF: ['2013.01b',  '2016.101',  '2016.107',  '2017.113'],
+        LSDALTON: ['master 2018 OMP intel17'],
         TURBO: ['6.5','7.1.1'],
         CPMD: [
     'ELISA MTS',
