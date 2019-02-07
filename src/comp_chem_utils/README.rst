@@ -28,6 +28,11 @@ cpmd_utils
 
 .. automodule:: comp_chem_utils.cpmd_utils
 
+qmmm_utils
+----------
+
+.. automodule:: comp_chem_utils.qmmm_utils
+
 periodic
 --------
 
@@ -53,6 +58,21 @@ mysql_tables
 ------------
 
 .. automodule:: comp_chem_utils.mysql_tables
+
+program_info
+------------
+
+.. automodule:: comp_chem_utils.program_info
+
+read_gaussian
+------------
+
+.. automodule:: comp_chem_utils.read_gaussian
+
+sbatch_info
+------------
+
+.. automodule:: comp_chem_utils.sbatch_info
 
 
 References
