@@ -521,7 +521,7 @@ spectra_kinds={
 
 def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
         nconf=1, fwhm=0.1, temp=0.0, refraction=1.0, 
-        ctype='lorentzian', kind='CROSS_SECTION', plot=True):
+        ctype='lorentzian', kind='CROSS_SECTION', with_sticks=False, plot=True):
     """Plot a spectrum based on theoretical data points.
 
     This is the main function of the module that should be used
@@ -562,6 +562,9 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
 
             The default is ``kind='CROSS_SECTION'``.
 
+        with_sticks (bool, optional): If ``True``, a stick spectrum will be plotted on top of what is 
+            required by the ``kind`` keyword. (Default is ``False``). Will affect only when ``plot==True``.
+
         plot (bool, optional): To control wether to plot or not the spectrum. The default
             is to plot it.
 
@@ -596,7 +599,10 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
 
         if plot:
             # plot grid points
-            plt.plot(xpts, ypts)
+            myplt = plt.plot(xpts, ypts)
+
+            if with_sticks:
+                plot_stick_spectrum(exc, osc, color=myplt[0].get_color())
 
     if plot:
         # horizontal black line at 0
