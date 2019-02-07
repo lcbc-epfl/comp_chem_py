@@ -11,6 +11,7 @@ import numpy as np
 from comp_chem_utils.molecule_data import read_xyz_table, xyz_file
 from comp_chem_utils.utils import get_file_as_list, get_lmax_from_atomic_charge
 from comp_chem_utils.conversions import AU_TO_PS
+from comp_chem_utils.periodic import element
 
 
 def read_standard_file(fn):
@@ -45,7 +46,6 @@ def read_standard_file(fn):
         info[i,:] = [float(line.split()[j+1]) for j in range(ninfo)]
 
     return steps, info
-
 
 def read_TRAJEC_xyz(fn):
     """Read TRAJEC.xyz file and export it.
@@ -92,6 +92,12 @@ def read_TRAJEC_xyz(fn):
 
     return steps, traj_xyz
 
+def read_GEOMETRY_xyz(fn):
+    """Like read_TRAJEC_xyz for a single geometry and without the step index."""
+
+    lines = get_file_as_list(fn)
+    natoms = int(lines[0])
+    return read_xyz_table(lines[2:natoms+2])
 
 def write_TRAJEC_xyz(steps, traj_xyz, output):
     """Write a TRAJEC.xyz file (CPMD style) to the output file.
@@ -225,6 +231,14 @@ def split_TRAJEC_data(steps, traj_xyz, verbose=True, interactif=True, write_xyz=
             xyzf.out_to_file(fname=fname)
 
     return new_steps, new_traj_xyz
+
+
+def read_GEOMETRY(fn):
+    """Simplified version of read_FTRAJECTORY for a single structure."""
+    data = np.loadtxt(fn)
+    xyz = data[:,0:3]
+    vel = data[:,3:]
+    return xyz, vel
 
 
 def read_TRAJECTORY(fn, verbose=False):
@@ -528,6 +542,28 @@ def xyz_to_cpmd_atoms(xyz_data=None, xyz_filename=None, PPs=None):
 
     return lines
 
+def qmmm_cpmd_atoms(atom_types, PPs=None):
+    """Return list of strings as in CPMD ATOMS section for QMMM calculation."""
+
+    lines = []
+    lines.append('&ATOMS')
+    # print atom types
+    for atype, idx in atom_types.items():
+
+        lines.append('*{}_{}'.format(atype, PPs))
+
+        atomic_charge = element(atype).atomic
+        lmax = get_lmax_from_atomic_charge(atomic_charge)
+
+        lines.append('   LMAX={}'.format(lmax) )
+        lines.append('   {}'.format( len(idx)) )
+
+        idx_str = ' '.join( [str(x) for x in idx ] )
+        lines.append( '   ' +idx_str )
+
+    lines.append('&END')
+
+    return lines
 
 def xyz_data_to_np(xyz_data):
     """Convert xyz_data information to a tuple (atoms, coord)
