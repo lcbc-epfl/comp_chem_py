@@ -28,6 +28,7 @@ Feel free to re-use and modify as you wish and :ref:`contact` me if you have any
    :caption: Contents:
 
    comp_chem_utils
+   cpmd_scripts
    PDOS
 
 Set up and installation
