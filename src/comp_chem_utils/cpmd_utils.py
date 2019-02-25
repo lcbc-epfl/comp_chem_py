@@ -117,7 +117,6 @@ def write_TRAJEC_xyz(steps, traj_xyz, output):
             myf.write(' STEP:{:12d}\n'.format(s))
             for line in x:
                 #myf.write('{:>2} {:13.6f} {:13.6f} {:13.6f}\n'.format(*line))
-                print(line)
                 myf.write('{0[0]:<2} {0[1]:13.6f} {0[2]:13.6f} {0[3]:13.6f}\n'.format(line))
 
 
