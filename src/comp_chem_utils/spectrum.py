@@ -263,7 +263,7 @@ def read_table_spectrum(output, search_str, offset=0, pos_e=0, pos_f=1, verbose=
             i=0
             while(keep_reading):
                 try:
-                    nl = out[i+offset+idx].split()
+                    nl = out[i+offset+idx+1].split()
                     exc_ener.append( float(nl[pos_e]) )
                     strength.append( float(nl[pos_f]) )
                     i+=1
