@@ -223,15 +223,16 @@ def read_spectrum(output, kind, verbose=False):
     return exc, osc
 
 
-def read_table_spectrum(output, search_str, offset=0, pos_e=0, pos_f=1, verbose=False):
+def read_table_spectrum(output, search_str='', offset=0, pos_e=0, pos_f=1, verbose=False):
     """Read spectrum data arranged as a table in the output file.
     
     Args:
         output (str): Name of the output file containing the spectrum information. 
             Can include path to file.
 
-        search_str (str): String that will be search in the output file
-            to locate the data to be extracted.
+        search_str (str, optional): String that will be search in the output file
+            to locate the data to be extracted. If it's not provided, the output is 
+            assumed to contain only raw data.
 
         offset (int, optional): Number of lines to skip after the matching line before
             the table starts. Default is 0, which means that the table is assumed to start
@@ -253,12 +254,15 @@ def read_table_spectrum(output, search_str, offset=0, pos_e=0, pos_f=1, verbose=
         1-D ``np.array()``, ``exc`` and ``osc``.
     """
 
+    if search_str == '':
+        offset = offset-1
+
     out = get_file_as_list(output, raw=True)
     
     exc_ener = []
     strength = []
     for idx, line in enumerate(out):
-        if search_str in line:
+        if (search_str in line) or (search_str == ''):
             keep_reading = True
             i=0
             while(keep_reading):
