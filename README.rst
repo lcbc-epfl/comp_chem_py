@@ -1,7 +1,8 @@
 |Documentation Status|
 |MIT license| 
-|PyPI status|
-|PyPI version shields.io|
+.. |PyPI status|
+.. |PyPI version shields.io|
+|DOI|
 
 .. |Documentation Status| image:: https://readthedocs.org/projects/comp_chem_py/badge/?version=latest
    :target: http://comp_chem_py.readthedocs.io/?badge=latest
@@ -14,6 +15,9 @@
 
 .. |PyPI version shields.io| image:: https://img.shields.io/pypi/v/comp_chem_py.svg
    :target: https://pypi.python.org/pypi/comp_chem_py/
+
+.. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.2580170.svg
+   :target: https://doi.org/10.5281/zenodo.2580170
 
 comp_chem_py: python library for computational chemistry
 ========================================================
