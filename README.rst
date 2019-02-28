@@ -31,6 +31,14 @@ Feel free to re-use and modify as you wish and :ref:`contact` me if you have any
    cpmd_scripts
    PDOS
 
+Citation
+========
+
+If you use this library in a program or publication, please add the following reference:
+
+* comp_chem_py, a python library for computational chemistry, Pablo Baudin,
+  ́École Polytechnique Fédérale de Lausanne.
+
 Set up and installation
 =======================
 
@@ -73,12 +81,10 @@ This will install the ``comp_chem_py`` package with all available dependencies a
 Documentation
 =============
 
-Please take a look at the code `documentation <http://comp_chem_py.readthedocs.io/en/latest/>`_ for more details. 
+Please take a look at the code `documentation <http://comp_chem_py.readthedocs.io/>`_ for more details. 
 
 
 .. todo::
-   #. Remove old_comp_chem_py repository/group and all subrepositories or archive it.
-
    #. Add tests. Maybe with doctest. They should also be included in the setup.py. See,
          https://python-packaging.readthedocs.io/en/latest/testing.html
 
@@ -86,7 +92,7 @@ Please take a look at the code `documentation <http://comp_chem_py.readthedocs.i
 
    #. test ./setup.py script with pip.
 
-   #. Find out how to deal with the dependeny on MySQLdb package.
+   #. Find out how to deal with the dependency on MySQLdb package.
 
    #. Add the ebsel package into setup.py using the git repo as,
          dependency_links=['http://github.com/user/repo/tarball/master#egg=package-1.0']
