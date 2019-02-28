@@ -36,8 +36,9 @@ Citation
 
 If you use this library in a program or publication, please add the following reference:
 
-* comp_chem_py, a python library for computational chemistry, Pablo Baudin, 
-  École Polytechnique Fédérale de Lausanne.
+* *comp_chem_py, a python library for computational chemistry*, Pablo Baudin,
+  (Version vX.Y), (2019). http://doi.org/10.5281/zenodo.2580170
+
 
 Set up and installation
 =======================
