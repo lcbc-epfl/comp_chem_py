@@ -36,8 +36,8 @@ Citation
 
 If you use this library in a program or publication, please add the following reference:
 
-* comp_chem_py, a python library for computational chemistry, Pablo Baudin,
-  ́École Polytechnique Fédérale de Lausanne.
+* comp_chem_py, a python library for computational chemistry, Pablo Baudin, 
+  École Polytechnique Fédérale de Lausanne.
 
 Set up and installation
 =======================
