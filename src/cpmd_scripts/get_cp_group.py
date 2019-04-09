@@ -10,7 +10,7 @@ The attempt here is:
 * to have a uniform distribution of plane waves on all CP groups.
 
 * to minimize CP_GROUP with that constraint, where CP_GROUP is the
-    number of MPI tasks per CP_GROUP, i.e. CP_GROUP size.
+  number of MPI tasks per CP_GROUP, i.e. CP_GROUP size.
 
 * to make the number of MPI tasks a multiple of the number of CPUs on a node.
 """
