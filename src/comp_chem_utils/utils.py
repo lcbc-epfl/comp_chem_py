@@ -186,6 +186,24 @@ def change_vector_norm(fix, mob, R):
     return fix + R * unit
 
 
+def change_vector_norm_sym(pos1, pos2, R):
+    """Symmetric version of change_vector_norm function.
+
+    In other word both positions are modified symmetrically.
+    """
+
+    unit = pos2 - pos1
+    norm = np.linalg.norm(unit)
+    unit = unit/norm
+
+    shift = (R-norm)/2.0
+
+    # return new position
+    new_pos1 = pos1 - unit * shift
+    new_pos2 = pos2 + unit * shift
+    return new_pos1, new_pos2
+
+
 def get_rmsd(xyz_data1, xyz_data2):
     """Calculate RMSD between two sets of coordinates.
 

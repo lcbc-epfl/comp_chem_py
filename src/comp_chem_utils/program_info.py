@@ -14,7 +14,12 @@ class executable(object):
     def get_exe(self):
         exe=''
         if self.prog==LSDALTON:
-            exe = '/home/pbaudin/Work/lsdalton_2018/build_omp_intel17/lsdalton.x'
+
+            if self.version=='OMP 2018':
+                exe = '/home/pbaudin/Work/softwares/lsdalton_2018/build_omp_intel17_new/lsdalton.x'
+
+            elif self.version=='MPI CPSD':
+                exe = '/home/pbaudin/Work/softwares/lsdalton_mp_cpsd/build/lsdalton.x'
 
         elif self.prog==ADF:
             exe = 'adf'
@@ -32,7 +37,7 @@ class executable(object):
                 exe = '/home/pbaudin/Work/MTS_CPMD/cpmd_reference/bin/cpmd.x'
 
             elif self.version=='MARTIN SVN':
-                exe = '/home/pbaudin/Work/cpmd_martin/bin/cpmd.x'
+                exe = '/home/pbaudin/Work/softwares/cpmd_martin/bin/cpmd.x'
 
             elif self.version=='PABLO PORTING MTS':
                 exe = '/home/pbaudin/Work/MTS_CPMD/cpmd_porting/CPMD/bin_elisa/bin/cpmd.x'
@@ -70,7 +75,11 @@ class executable(object):
                 env.append( 'module load adf' )
 
         elif self.prog==LSDALTON:
-            env.append( 'module load intel/17.0.4' )
+            if self.version=='OMP 2018':
+                env.append( 'module load intel/17.0.4' )
+
+            elif self.version=='MPI CPSD':
+                env.append( 'module load intelmpi/17.0.4' )
 
         elif self.prog==TURBO:
             if self.version:
@@ -121,7 +130,11 @@ class executable(object):
             exec_line = '$EXE -n $np < ${job}.inp  > ${job}.out'
 
         elif self.prog==LSDALTON:
-            exec_line = '$EXE'
+            if self.version=='OMP 2018':
+                exec_line = '$EXE'
+
+            elif self.version=='MPI CPSD':
+                exec_line = 'mpirun -np $np $EXE'
 
         elif self.prog==TURBO:
             exec_line = 'dscf > ${job}.out'
@@ -151,7 +164,7 @@ TURBO='turbo'
 
 programs = {
         ADF: ['2013.01b',  '2016.101',  '2016.107',  '2017.113'],
-        LSDALTON: ['master 2018 OMP intel17'],
+        LSDALTON: ['OMP 2018','MPI CPSD'],
         TURBO: ['6.5','7.1.1'],
         CPMD: [
     'ELISA MTS',

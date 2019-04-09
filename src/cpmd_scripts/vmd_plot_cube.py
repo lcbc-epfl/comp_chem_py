@@ -58,6 +58,46 @@ mol modcolor 2 0 ColorID 1
 # ------------------------------------------
 """
 
+load_script_name = "load_orbs_cubes.vmd"
+prt_script_name = "print_orbs.vmd"
+conv_script_name = "convert_tga_png.sh"
+
+def create_scripts(cube_files):
+
+    # ----------------------------------------------------------------
+    # 1) CREATE VMD SCRIPT THAT WILL LOAD THE CUBE FILES IN VMD
+    with open(load_script_name,"w") as script:
+
+        script.write( vmd_setup_graphic )
+
+        # loop over all cube files
+        for cube in cube_files:
+
+            script.write( "mol addfile {}\n".format(cube) )
+
+    # ----------------------------------------------------------------
+    # 2) CREATE VMD SCRIPT THAT WILL EXPORT PICTURES OF THE ORBITALS
+    with open(prt_script_name,"w") as script:
+
+        # loop over all cube files
+        for idx,cube in enumerate(cube_files):
+
+            script.write( "mol modstyle 1 0 Isosurface  0.01 {} 0 0 1 1\n".format(idx))
+            script.write( "mol modstyle 2 0 Isosurface -0.01 {} 0 0 1 1\n".format(idx) )
+            script.write( "render TachyonInternal {}.tga \n".format( cube[:-5] ) )
+
+        script.write( "quit \n" )
+
+    # ----------------------------------------------------------------
+    # 3) CREATE CONVERSION SCRIPT 
+    with open(conv_script_name,"w") as script:
+
+        script.write( "#!/bin/bash \n")
+        # loop over all cube files
+        for idx,cube in enumerate(cube_files):
+            script.write( "convert {0}.tga {0}.png \n".format( cube[:-5] ) )
+            script.write( "rm {}.tga \n".format( cube[:-5] ) )
+
 
 if __name__=="__main__":
 
@@ -68,57 +108,54 @@ if __name__=="__main__":
     parser.add_argument('-c','--cube', nargs='+', help='List of cube files to render', required=True)
     args = parser.parse_args()
 
+    create_scripts(args.cube)
 
     # ----------------------------------------------------------------
-    # 1) CREATE VMD SCRIPT THAT WILL LOAD THE CUBE FILES IN VMD
-    load_script_name = "load_orbs_cubes.vmd"
-    with open(load_script_name,"w") as script:
+    # ASK THE USER WHAT TO DO
+    job = raw_input("""
+    GENERATE SCRIPT AND SHOW COMMANDS : 1 [default]
 
-        script.write( vmd_setup_graphic )
+    DISPLAY CUBE FILES IN VMD DIRECTLY: 2
+    """)
 
-        # loop over all cube files
-        for cube in args.cube:
+    if job=='2':
 
-            script.write( "mol addfile {}\n".format(cube) )
+        # ----------------------------------------------------------------
+        # PRINT SOME INFORMATION TO THE USER
+        raw_input("""
+        We will now launch VMD with the orbital cube files.
+        In the graphic window, make your modifications until you are satisfied.
+        To export images of the orbitals run the following command in the vmd terminal:
+         
+        vmd > play {}
+         
+        Type <ENTER> when you are ready.
+        """.format( prt_script_name ) )
+         
+         
+        # ----------------------------------------------------------------
+        # LAUNCH VMD WITH LOAD SCRIPT
+        os.system( "vmd {} -e {}".format(args.xyz, load_script_name) )
+         
+         
+        # ----------------------------------------------------------------
+        # CONVERT THE .TGA FILES TO PNG FORMAT
+        print("Conversion of images from .tga to .png format...")
+        os.system( "bash {}".format(conv_script_name) )
+        #for cube in args.cube:
+        #    os.system( "convert {0}.tga {0}.png".format( cube[:-5] ) )
+        #    os.system( "rm {}.tga".format( cube[:-5] ) )
 
+    else:
+        print("""
+        COMMANDS TO RUN:
+            # 1) Loads cube files and display nicely using vmd:
+            vmd {0} -e {1}
 
-    # ----------------------------------------------------------------
-    # 2) CREATE VMD SCRIPT THAT WILL EXPORT PICTURES OF THE ORBITALS
-    prt_script_name = "print_orbs.vmd"
-    with open(prt_script_name,"w") as script:
+            # 2) Generates .tga images of cube files from vmd prompt:
+            vmd > play {2}
 
-        # loop over all cube files
-        for idx,cube in enumerate(args.cube):
-
-            script.write( "mol modstyle 1 0 Isosurface  0.01 {} 0 0 1 1\n".format(idx))
-            script.write( "mol modstyle 2 0 Isosurface -0.01 {} 0 0 1 1\n".format(idx) )
-            script.write( "render TachyonInternal {}.tga \n".format( cube[:-5] ) )
-
-        script.write( "quit \n" )
-
-
-    # ----------------------------------------------------------------
-    # 3) PRINT SOME INFORMATION TO THE USER
-    raw_input("""
-    We will now launch VMD with the orbital cube files.
-    In the graphic window, make your modifications until you are satisfied.
-    To export images of the orbitals run the following command in the vmd terminal:
-
-    vmd > play {}
-
-    Type <ENTER> when you are ready.
-    """.format( prt_script_name) )
-
-
-    # ----------------------------------------------------------------
-    # 4) LAUNCH VMD WITH LOAD SCRIPT
-    os.system( "vmd {} -e {}".format(args.xyz, load_script_name) )
-
-
-    # ----------------------------------------------------------------
-    # 5) CONVERT THE .TGA FILES TO PNG FORMAT
-    print("Conversion of images from .tga to .png format...")
-    for cube in args.cube:
-        os.system( "convert {0}.tga {0}.png".format( cube[:-5] ) )
-        os.system( "rm {}.tga".format( cube[:-5] ) )
+            # 3) Quit vmd and convert .tga to .png format:
+            bash {3}
+        """.format(args.xyz, load_script_name, prt_script_name, conv_script_name))
 
