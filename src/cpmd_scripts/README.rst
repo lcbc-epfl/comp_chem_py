@@ -9,11 +9,6 @@ cell_size
 
 .. automodule:: cpmd_scripts.cell_size
 
-cpmd_spec
----------
-
-.. automodule:: cpmd_scripts.cpmd_spec
-
 vmd_plot_cube
 -------------
 
@@ -23,3 +18,9 @@ get_cp_group
 ------------
 
 .. automodule:: cpmd_scripts.get_cp_group
+
+cpmd_spec
+---------
+
+.. automodule:: cpmd_scripts.cpmd_spec
+

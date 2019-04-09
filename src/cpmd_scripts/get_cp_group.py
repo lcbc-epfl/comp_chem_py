@@ -7,17 +7,22 @@ to give optimal performance at all!
 
 The attempt here is:
 
-    * to have a uniform distribution of plane waves on all CP groups.
+* to have a uniform distribution of plane waves on all CP groups.
 
-    * to minimize CP_GROUP with that constraint, where CP_GROUP is the
-        number of MPI tasks per CP_GROUP, i.e. CP_GROUP size.
+* to minimize CP_GROUP with that constraint, where CP_GROUP is the
+    number of MPI tasks per CP_GROUP, i.e. CP_GROUP size.
 
-    * to make the number of MPI tasks a multiple of the number of CPUs on a node.
+* to make the number of MPI tasks a multiple of the number of CPUs on a node.
 """
+
+__author__="Pablo Baudin"
+__email__="pablo.baudin@epfl.ch"
 
 import pandas as pd
 
+
 if __name__=="__main__":
+
     max_nnodes      = int(input("Maximum number of nodes that can be used   :  "))
 
     # if a node has 16 CPUs this should probably be 16

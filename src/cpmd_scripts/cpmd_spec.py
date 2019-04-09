@@ -47,7 +47,7 @@ if __name__=="__main__":
         tmp = plt.plot(x, y, label=flist[i])
         #tmp = plt.plot(x, y, label=lab[i])
         plt.vlines(e, -0.1, f, color=tmp[0].get_color())
-    
+
     # ADD BLACK LINE AT f=0
     plt.axhline(color='k')
 
