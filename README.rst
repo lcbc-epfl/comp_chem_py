@@ -11,13 +11,6 @@
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.2580170.svg
    :target: https://doi.org/10.5281/zenodo.2580170
 
-.. |PyPI status|
-   |PyPI version shields.io|
-   |PyPI status| image:: https://img.shields.io/pypi/status/comp_chem_py.svg
-   :target: https://pypi.python.org/pypi/comp_chem_py/
-   |PyPI version shields.io| image:: https://img.shields.io/pypi/v/comp_chem_py.svg
-   :target: https://pypi.python.org/pypi/comp_chem_py/
-
 
 comp_chem_py: python library for computational chemistry
 ========================================================
