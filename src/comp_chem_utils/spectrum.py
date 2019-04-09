@@ -27,7 +27,7 @@ class Search(object):
     Example:
         Possible output file (named ``'my_output'``)::
 
-            Excited State 
+            Excited State
             E=1.0000cm-1 f=0.00000
 
         In that case to extract the energy in eV we would have to do::
@@ -43,7 +43,7 @@ class Search(object):
         search_str (str): String that will be search in the output file
             to locate the data to be extracted.
 
-        col_id (int): The line matching the search string is splitted into a list with :py:meth:`str.split()` 
+        col_id (int): The line matching the search string is splitted into a list with :py:meth:`str.split()`
             and the element ``col_id`` of the list is extracted.
 
         offset (int, optional): In case the line of interest is not the line with ``search_str`` the
@@ -68,18 +68,18 @@ class Search(object):
 
     def get_all(self):
         """Extract all the relevant data depending on attribute values.
-        
+
         Return:
             The extracted data is returned as floats in a 1-D ``np.array()``.
         """
 
         try:
             out = get_file_as_list(self.fname, raw=True)
-    
+
             all_data = []
 
             for idx, line in enumerate(out):
-    
+
                 if self.search_str in line:
                     all_data.append( self.get_single(out, idx) )
 
@@ -102,18 +102,18 @@ class Search(object):
 
         # split data line as a list
         ml = lines[idx + self.offset ].split()
-         
+
         # get element of interest in the line
         data = ml[ self.col_id ][self.trim[0]:self.trim[1]]
-         
+
         # return value converted to proper units
         return float( data ) * self.cfac
 
 
 def search_exc(kind, output):
     """Get excitation energies from an output file.
-    
-    The ``kind`` of output file is used to determine the parameters to be used 
+
+    The ``kind`` of output file is used to determine the parameters to be used
     to set the :py:class:`~comp_chem_utils.spectrum.Search` class.
     """
 
@@ -141,8 +141,8 @@ def search_exc(kind, output):
 
 def search_osc(kind, output):
     """Get oscillator strengts from an output file.
-    
-    The ``kind`` of output file is used to determine the parameters to be used 
+
+    The ``kind`` of output file is used to determine the parameters to be used
     to set the :py:class:`~comp_chem_utils.spectrum.Search` class.
     """
 
@@ -180,7 +180,7 @@ def print_spectrum(exc_ener,strength,output):
 def read_spectrum(output, kind, verbose=False):
     """Read an output file and parse it to find excitation energies and oscillator strengths.
 
-    Note: 
+    Note:
         If the spectrum data is written as a table, i.e. in the following format::
 
             THIS IS A TABLE OF SPECTRUM DATA:
@@ -191,14 +191,14 @@ def read_spectrum(output, kind, verbose=False):
 
         Then the :py:func:`~comp_chem_utils.spectrum.read_table_spectrum` function
         should be used instead.
-    
-    Args: 
-        output (str): Name of the output file containing the spectrum information. 
+
+    Args:
+        output (str): Name of the output file containing the spectrum information.
             Can include path to file.
 
         kind (str): Kind of output, e.g. 'gaussian' or 'lsdalton'. This is used in the
             :py:func:`~comp_chem_utils.spectrum.search_exc` and
-            :py:func:`~comp_chem_utils.spectrum.search_osc` 
+            :py:func:`~comp_chem_utils.spectrum.search_osc`
             to set the parameters of the :py:class:`~comp_chem_utils.spectrum.Search`
             class. New ``kind`` have to be implemented in those functions.
 
@@ -213,7 +213,7 @@ def read_spectrum(output, kind, verbose=False):
     """
 
     out = get_file_as_list(output, raw=True)
-    
+
     exc = search_exc(kind, output)
     osc = search_osc(kind, output)
 
@@ -225,20 +225,20 @@ def read_spectrum(output, kind, verbose=False):
 
 def read_table_spectrum(output, search_str='', offset=0, pos_e=0, pos_f=1, verbose=False):
     """Read spectrum data arranged as a table in the output file.
-    
+
     Args:
-        output (str): Name of the output file containing the spectrum information. 
+        output (str): Name of the output file containing the spectrum information.
             Can include path to file.
 
         search_str (str, optional): String that will be search in the output file
-            to locate the data to be extracted. If it's not provided, the output is 
+            to locate the data to be extracted. If it's not provided, the output is
             assumed to contain only raw data.
 
         offset (int, optional): Number of lines to skip after the matching line before
             the table starts. Default is 0, which means that the table is assumed to start
             right after the matching line.
 
-        pos_e (int, optional): Column index for the excitation energies. 
+        pos_e (int, optional): Column index for the excitation energies.
             Default is 0.
 
         pos_f (int, optional): Column index for the oscillator strengths.
@@ -258,7 +258,7 @@ def read_table_spectrum(output, search_str='', offset=0, pos_e=0, pos_f=1, verbo
         offset = offset-1
 
     out = get_file_as_list(output, raw=True)
-    
+
     exc_ener = []
     strength = []
     for idx, line in enumerate(out):
@@ -285,20 +285,20 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
     """Calculate the spectral function from theoretical data (excitation energies and oscillator strengths).
 
     Note:
-        It is not recommended to use this function directly. Instead the 
-        :py:func:`~comp_chem_utils.spectrum.plot_spectrum` function should 
+        It is not recommended to use this function directly. Instead the
+        :py:func:`~comp_chem_utils.spectrum.plot_spectrum` function should
         be used which serves as a wrapper and gives more flexibility on the output data.
 
     The spectral function is calculated as
 
     .. math::
         S(\omega) = \\frac{1}{N_\\text{conf}} \sum_{R=1}^{N_\\text{conf}} \sum_{i=1}^{N_\\text{states}}
-        f_{i}(R) \cdot g( \omega - \omega_{i}(R), \\delta) 
+        f_{i}(R) \cdot g( \omega - \omega_{i}(R), \\delta)
 
     This expression is very well descrined in, e.g. [Barbatti2010a]_.
-    (f_i, \omega_i) is the pair of input excitation energies and oscillator strengths, while 
-    \omega is the incident frequency. The spectral line shape function is g which depends on the 
-    Full Width at Half Maximum \delta, it is expressed in reciprocal angular frequency units, 
+    (f_i, \omega_i) is the pair of input excitation energies and oscillator strengths, while
+    \omega is the incident frequency. The spectral line shape function is g which depends on the
+    Full Width at Half Maximum \delta, it is expressed in reciprocal angular frequency units,
     i.e. seconds (per molecules or structure).
 
     Args:
@@ -306,35 +306,35 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
 
         osc: Input oscillator strengths given in a one dimenssional ``np.array()``.
 
-        unit_in (str, optional): String describing the unit used for the input 
-            excitation energies. The string must correspond to one of the keys of 
+        unit_in (str, optional): String describing the unit used for the input
+            excitation energies. The string must correspond to one of the keys of
             the dictionary ``convert_to_joules`` in the :py:mod:`~comp_chem_utils.conversions`
             module. Default is ``'ENERGY: eV'``.
 
         nconf (int, optional): Total number of conformations used in the input data.
             This is used for normalization to a single structure. Default is 1.
 
-        fwhm (float, optional): Full width at Half Maximum used in the convolution function. 
+        fwhm (float, optional): Full width at Half Maximum used in the convolution function.
             It must be given in the same units as ``unit_in``. The Default value is ``None``,
             which will be latter changed to correspond to 0.1 eV.
 
-        ctype (str, optional): Defines the type of convolution. Either ``'lorentzian'`` which is default 
+        ctype (str, optional): Defines the type of convolution. Either ``'lorentzian'`` which is default
             or ``'gaussian'``.
 
         x_range (list, optional): This is a two-value list defining the range of energy data for which
-            the spectral function has to be calculated. It should be given in the same units 
-            as ``unit_in``. It is default to ``None`` which will be latter changed to 
+            the spectral function has to be calculated. It should be given in the same units
+            as ``unit_in``. It is default to ``None`` which will be latter changed to
             appropriate values related to the FWHM.
 
         x_reso (int, optional): Resolution of the spectral function given as the number of grid points
-            per energy unit (``unit_in``). The default value is ``None``,  which will be latter changed 
+            per energy unit (``unit_in``). The default value is ``None``,  which will be latter changed
             to correspond to 100 pts per eV.
 
     Returns:
         xpts, ypts
 
         Those are two ``np.array()`` containing the grid points required to plot the spectral function.
-        No matter the unit of the input energies, (``unit_in``). The spectral function (in ypts) is 
+        No matter the unit of the input energies, (``unit_in``). The spectral function (in ypts) is
         expressed in reciprocal angular frequency (seconds). While the xpts values are expressed in ``unit_in``
         energy unit.
     """
@@ -353,7 +353,7 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
 
     # get x-axis range
     if x_range:
-        xmin= x_range[0] 
+        xmin= x_range[0]
         xmax= x_range[1]
     else:
         xmax = max(exc) + 4.0*fwhm
@@ -362,7 +362,7 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
     # set number of points from range and resolution
     npts = int((xmax - xmin)*x_reso)
 
-    # set x-values 
+    # set x-values
     xpts = np.linspace(xmin, xmax, npts)
     ypts = np.zeros(npts)
 
@@ -382,7 +382,7 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
 
     # make convolution of spectrum
     for i, f in enumerate(osc):
-        tmp = (ang_freq[i] - conv.convert(xpts, unit_in, 'ANG. FREQ: s-1')) 
+        tmp = (ang_freq[i] - conv.convert(xpts, unit_in, 'ANG. FREQ: s-1'))
         if ctype=='lorentzian':
             ypts += f*norm/( tmp*tmp + (delta/2.0)**2.0 )
 
@@ -409,12 +409,12 @@ def temperature_effect(E, unit_in='ENERGY: eV', temp=None):
     Args:
         E (float): Input energy or frequency expressed in ``unit_in``.
 
-        unit_in (str, optional): String describing the unit used for the input 
-            excitation energies. The string must correspond to one of the keys of 
+        unit_in (str, optional): String describing the unit used for the input
+            excitation energies. The string must correspond to one of the keys of
             the dictionary ``convert_to_joules`` in the :py:mod:`~comp_chem_utils.conversions`
             module. Default is ``'ENERGY: eV'``.
 
-        temp (float, optional): Working temperature in Kelvin. The default value is ``None``, 
+        temp (float, optional): Working temperature in Kelvin. The default value is ``None``,
             which means that no temperature effect will be calculated.
 
     Returns:
@@ -428,7 +428,7 @@ def temperature_effect(E, unit_in='ENERGY: eV', temp=None):
         # So E must be in joules
         E_Joules = conv.convert(E, unit_in, 'ENERGY: J')
         factor = np.exp( - E_Joules / (const.value('boltzmann') * temp) )
-        
+
     return 1.0 - factor
 
 
@@ -439,8 +439,8 @@ def cross_section(xpts, ypts, unit_in='ENERGY: eV', temp=None, refraction=1.0):
     that might depend on temperature and the refraction index of the medium.
 
     Note:
-        It is not recommended to use this function directly. Instead the 
-        :py:func:`~comp_chem_utils.spectrum.plot_spectrum` function should 
+        It is not recommended to use this function directly. Instead the
+        :py:func:`~comp_chem_utils.spectrum.plot_spectrum` function should
         be used which serves as a wrapper and gives more flexibility on the output data.
 
         The ``xpts``, and ``ypts`` input data are expected to come directly
@@ -451,15 +451,15 @@ def cross_section(xpts, ypts, unit_in='ENERGY: eV', temp=None, refraction=1.0):
             function. They are expressed in ``unit_in``.
 
         ypts (np.array): Grid points corresponding to the y-axis of the spectral
-            function. They have to be given in reciprocal angular frequency units 
+            function. They have to be given in reciprocal angular frequency units
             (seconds).
 
-        unit_in (str, optional): String describing the unit used for the input 
-            excitation energies. The string must correspond to one of the keys of 
+        unit_in (str, optional): String describing the unit used for the input
+            excitation energies. The string must correspond to one of the keys of
             the dictionary ``convert_to_joules`` in the :py:mod:`~comp_chem_utils.conversions`
             module. Default is ``'ENERGY: eV'``.
 
-        temp (float, optional): Working temperature in Kelvin. The default value is ``None``, 
+        temp (float, optional): Working temperature in Kelvin. The default value is ``None``,
             which means that no temperature effect will be calculated.
 
         refraction (float, optional): The refraction index of the medium. Default value is 1.0.
@@ -469,16 +469,16 @@ def cross_section(xpts, ypts, unit_in='ENERGY: eV', temp=None, refraction=1.0):
         It is calculated from the spectral function as
 
         .. math::
-            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect} 
-            \cdot \\text{SPEC\_TO\_SIGMA} n.
+            \\sigma(\omega) = S (\omega) \cdot \\text{temp\_effect}
+            \cdot \\text{SPEC\_TO\_SIGMA}.
 
         where the temp_effect comes from :py:func:`~comp_chem_utils.spectrum.temperature_effect`,
-        ``SPEC_TO_SIGMA`` is the main conversion constant from 
+        ``SPEC_TO_SIGMA`` is the main conversion constant from
         :py:mod:`~comp_chem_utils.spectrum.conversions`, and n is the refraction index.
 
         The absorption cross section is returned as grid points in an ``np.array()``.
     """
-    
+
     sigma = []
     for E, S in zip(xpts, ypts):
         # SPEC_TO_SIGMA is the main conversion constant defined in the conversions module
@@ -506,7 +506,7 @@ def plot_stick_spectrum(exc, osc, color=None, label=None):
         label (optional): label to describe the data.
 
     Return:
-        Handle object comming out of the plt call that can be used for 
+        Handle object comming out of the plt call that can be used for
         the legend.
     """
 
@@ -517,14 +517,14 @@ def plot_stick_spectrum(exc, osc, color=None, label=None):
 
 
 spectra_kinds={
-        'STICKS': 'Oscillator strength [Arbitrary units]', 
-        'SPECTRAL_FUNC': 'Spectral function [s. $\\cdot $ molecules$^{-1}$]', 
-        'CROSS_SECTION': 'Cross section [$\\AA^2 \\cdot $ molecules$^{-1}$]', 
+        'STICKS': 'Oscillator strength [Arbitrary units]',
+        'SPECTRAL_FUNC': 'Spectral function [s. $\\cdot $ molecules$^{-1}$]',
+        'CROSS_SECTION': 'Cross section [$\\AA^2 \\cdot $ molecules$^{-1}$]',
         'EXPERIMENTAL': 'Molar absorptivity [M$^{-1}  \\cdot $cm$^{-1}$]'
         }
 
 def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
-        nconf=1, fwhm=0.1, temp=0.0, refraction=1.0, 
+        nconf=1, fwhm=0.1, temp=0.0, refraction=1.0,
         ctype='lorentzian', kind='CROSS_SECTION', with_sticks=False, plot=True):
     """Plot a spectrum based on theoretical data points.
 
@@ -536,37 +536,37 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
 
         osc: Input oscillator strengths given in a one dimenssional ``np.array()``.
 
-        unit_in (str, optional): String describing the unit used for the input 
-            excitation energies. The string must correspond to one of the keys of 
+        unit_in (str, optional): String describing the unit used for the input
+            excitation energies. The string must correspond to one of the keys of
             the dictionary ``convert_to_joules`` in the :py:mod:`~comp_chem_utils.conversions`
             module. Default is ``'ENERGY: eV'``.
 
         nconf (int, optional): Total number of conformations used in the input data.
             This is used for normalization to a single structure. Default is 1.
 
-        fwhm (float, optional): Full width at Half Maximum used in the convolution function. 
+        fwhm (float, optional): Full width at Half Maximum used in the convolution function.
             It must be given in the same units as ``unit_in``. The Default value is ``None``,
             which will be latter changed to correspond to 0.1 eV.
 
-        temp (float, optional): Working temperature in Kelvin. The default value is ``None``, 
+        temp (float, optional): Working temperature in Kelvin. The default value is ``None``,
             which means that no temperature effect will be calculated.
 
         refraction (float, optional): The refraction index of the medium. Default value is 1.0.
 
-        ctype (str, optional): Defines the type of convolution. Either ``'lorentzian'`` which is default 
+        ctype (str, optional): Defines the type of convolution. Either ``'lorentzian'`` which is default
             or ``'gaussian'``.
 
         kind (str, optional): String describing the type of spectrum that should be calculated.
             It has to be one of the following::
 
-                'STICKS': 'Oscillator strength [Arbitrary units]', 
-                'SPECTRAL_FUNC': 'Spectral function [s. $\\cdot $ molecules$^{-1}$]', 
-                'CROSS_SECTION': 'Cross section [$\\AA^2 \\cdot $ molecules$^{-1}$]', 
+                'STICKS': 'Oscillator strength [Arbitrary units]',
+                'SPECTRAL_FUNC': 'Spectral function [s. $\\cdot $ molecules$^{-1}$]',
+                'CROSS_SECTION': 'Cross section [$\\AA^2 \\cdot $ molecules$^{-1}$]',
                 'EXPERIMENTAL': 'Molar absorptivity [M$^{-1}  \\cdot $cm$^{-1}$]'
 
             The default is ``kind='CROSS_SECTION'``.
 
-        with_sticks (bool, optional): If ``True``, a stick spectrum will be plotted on top of what is 
+        with_sticks (bool, optional): If ``True``, a stick spectrum will be plotted on top of what is
             required by the ``kind`` keyword. (Default is ``False``). Will affect only when ``plot==True``.
 
         plot (bool, optional): To control wether to plot or not the spectrum. The default
@@ -580,7 +580,7 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
         the spectrum intensity with units depending on the chosen ``kind``.
 
         By default or if ``plot=True``, the function will plot the desired spectrum and show it
-        using the ``matplotlib`` tool. 
+        using the ``matplotlib`` tool.
     """
 
     if kind=='STICKS':
