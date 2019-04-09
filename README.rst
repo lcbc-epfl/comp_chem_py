@@ -2,8 +2,8 @@
 |MIT license| 
 |DOI|
 
-.. |Documentation Status| image:: https://readthedocs.org/projects/comp_chem_py/badge/?version=latest
-   :target: http://comp_chem_py.readthedocs.io/?badge=latest
+.. |Documentation Status| image:: https://readthedocs.org/projects/comp-chem-py/badge/?version=latest
+   :target: http://comp-chem-py.readthedocs.io/?badge=latest
    
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
    :target: LICENSE
