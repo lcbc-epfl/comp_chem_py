@@ -20,8 +20,8 @@ package_dir={
 scripts=[
         'bin/basis_count',
         'bin/cell_size',
-        'cpmd_spec',
-        'get_cp_group',
+        'bin/cpmd_spec',
+        'bin/get_cp_group',
         'bin/group_of_AOs',
         'bin/MSDB',
         'bin/PDOS',
@@ -31,9 +31,9 @@ scripts=[
         'bin/select_state',
         'bin/submit_job.sh',
         'bin/truncate_solvent',
-        'traj2xyz',
-        'truncate_solvent',
-        'vmd_plot_cube',
+        'bin/traj2xyz',
+        'bin/truncate_solvent',
+        'bin/vmd_plot_cube',
     ]
 
 
