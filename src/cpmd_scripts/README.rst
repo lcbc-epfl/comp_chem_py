@@ -18,3 +18,8 @@ vmd_plot_cube
 -------------
 
 .. automodule:: cpmd_scripts.vmd_plot_cube
+
+get_cp_group
+------------
+
+.. automodule:: cpmd_scripts.get_cp_group
