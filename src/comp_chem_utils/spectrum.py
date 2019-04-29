@@ -281,7 +281,7 @@ def read_table_spectrum(output, search_str='', offset=0, pos_e=0, pos_f=1, verbo
 
 
 def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype='lorentzian',
-        x_range=None, x_reso=None):
+        x_range=None, x_reso=None, raw=False):
     """Calculate the spectral function from theoretical data (excitation energies and oscillator strengths).
 
     Note:
@@ -348,8 +348,12 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
         x_reso = 100.0 / conv.convert(1.0, 'ENERGY: eV', unit_in)
 
     # copy input excitation energies to 'ANG. FREQ: s-1' units
-    ang_freq = conv.convert(exc, unit_in, 'ANG. FREQ: s-1')
-    fwhm_freq = conv.convert(fwhm, unit_in, 'ANG. FREQ: s-1')
+    if raw:
+        ang_freq = exc
+        fwhm_freq = fwhm
+    else:
+        ang_freq = conv.convert(exc, unit_in, 'ANG. FREQ: s-1')
+        fwhm_freq = conv.convert(fwhm, unit_in, 'ANG. FREQ: s-1')
 
     # get x-axis range
     if x_range:
@@ -382,7 +386,11 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
 
     # make convolution of spectrum
     for i, f in enumerate(osc):
-        tmp = (ang_freq[i] - conv.convert(xpts, unit_in, 'ANG. FREQ: s-1'))
+        if raw:
+            tmp = (ang_freq[i] - xpts)
+        else:
+            tmp = (ang_freq[i] - conv.convert(xpts, unit_in, 'ANG. FREQ: s-1'))
+
         if ctype=='lorentzian':
             ypts += f*norm/( tmp*tmp + (delta/2.0)**2.0 )
 
