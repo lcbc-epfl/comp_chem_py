@@ -330,6 +330,11 @@ def spectral_function(exc, osc, unit_in='ENERGY: eV', nconf=1, fwhm=None, ctype=
             per energy unit (``unit_in``). The default value is ``None``,  which will be latter changed
             to correspond to 100 pts per eV.
 
+        raw (bool, optional): When ``True``, the input excitation energies will not be converted
+            to reciprocal angular frequency units. The output spectral function will thus be in
+            reciprocal ``unit_in`` units and the user has to be careful for what is done to the
+            output afterwards. The default is ``False``.
+
     Returns:
         xpts, ypts
 
@@ -533,7 +538,9 @@ spectra_kinds={
 
 def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
         nconf=1, fwhm=0.1, temp=0.0, refraction=1.0,
-        ctype='lorentzian', kind='CROSS_SECTION', with_sticks=False, plot=True):
+        ctype='lorentzian', x_range=None, x_reso=None,
+        kind='CROSS_SECTION', with_sticks=False, plot=True):
+
     """Plot a spectrum based on theoretical data points.
 
     This is the main function of the module that should be used
@@ -563,6 +570,15 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
 
         ctype (str, optional): Defines the type of convolution. Either ``'lorentzian'`` which is default
             or ``'gaussian'``.
+
+        x_range (list, optional): This is a two-value list defining the range of energy data for which
+            the spectral function has to be calculated. It should be given in the same units
+            as ``unit_in``. It is default to ``None`` which will be latter changed to
+            appropriate values related to the FWHM.
+
+        x_reso (int, optional): Resolution of the spectral function given as the number of grid points
+            per energy unit (``unit_in``). The default value is ``None``,  which will be latter changed
+            to correspond to 100 pts per eV.
 
         kind (str, optional): String describing the type of spectrum that should be calculated.
             It has to be one of the following::
@@ -599,7 +615,8 @@ def plot_spectrum(exc, osc, unit_in='ENERGY: eV',
 
     else:
         # get spectral function in seconds per molecule
-        xpts, ypts = spectral_function(exc, osc, unit_in=unit_in, nconf=nconf, fwhm=fwhm, ctype=ctype)
+        xpts, ypts = spectral_function(exc, osc, unit_in=unit_in, nconf=nconf, fwhm=fwhm,
+                                       ctype=ctype, x_range=x_range, x_reso=x_reso)
 
         if kind!='SPECTRAL_FUNC':
             # get abs. cross section in Angstrom^2 per molecule
