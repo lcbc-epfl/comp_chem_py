@@ -21,6 +21,9 @@ class executable(object):
             elif self.version=='MPI CPSD':
                 exe = '/home/pbaudin/Work/softwares/lsdalton_mp_cpsd/build/lsdalton.x'
 
+            elif self.version=='OMP CPSD':
+                exe = '/home/pbaudin/Work/softwares/lsdalton_mp_cpsd/build_omp_intel17/lsdalton.x'
+
         elif self.prog==ADF:
             exe = 'adf'
 
@@ -75,7 +78,7 @@ class executable(object):
                 env.append( 'module load adf' )
 
         elif self.prog==LSDALTON:
-            if self.version=='OMP 2018':
+            if self.version in ['OMP 2018','OMP CPSD']:
                 env.append( 'module load intel/17.0.4' )
 
             elif self.version=='MPI CPSD':
@@ -130,7 +133,7 @@ class executable(object):
             exec_line = '$EXE -n $np < ${job}.inp  > ${job}.out'
 
         elif self.prog==LSDALTON:
-            if self.version=='OMP 2018':
+            if self.version in ['OMP 2018', 'OMP CPSD']:
                 exec_line = '$EXE'
 
             elif self.version=='MPI CPSD':
@@ -164,7 +167,7 @@ TURBO='turbo'
 
 programs = {
         ADF: ['2013.01b',  '2016.101',  '2016.107',  '2017.113'],
-        LSDALTON: ['OMP 2018','MPI CPSD'],
+        LSDALTON: ['OMP 2018','OMP CPSD','MPI CPSD'],
         TURBO: ['6.5','7.1.1'],
         CPMD: [
     'ELISA MTS',

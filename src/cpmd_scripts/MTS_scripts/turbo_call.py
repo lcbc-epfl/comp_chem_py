@@ -59,15 +59,16 @@ def run_turbo(prog, out, inp=''):
 
     # RUN
     if inp:
-        call_bash('{} < {} > {}'.format(prog, inp, out ))
+        call_bash('{} < {} &> {}'.format(prog, inp, out ))
     else:
-        call_bash('{} > {}'.format(prog, out ))
+        call_bash('{} &> {}'.format(prog, out ))
 
 
     # CHECK FOR PROPER TERMINATION
     success = False
     with open(out, 'r') as outf:
-        success = 'all done' in  outf.read().split('\n')[-6]
+        #success = 'all done' in  outf.read().split('\n')[-6]
+        success = 'ended normally' in  outf.read().split('\n')[-2]
 
     if not success:
         quit_cpmd('TURBOMOLE Error in {} see {} file'.format(prog, out))
@@ -163,7 +164,7 @@ def read_forces(grad):
     return forces
 
 
-def prepare_and_run_turbo(CPDIR, JOB, TITLE, GEO_XYZ, DEF_INP, FORCES_XYZ):
+def prepare_and_run_turbo(CPDIR_IN, JOB, TITLE, GEO_XYZ, DEF_INP, FORCES_XYZ):
     """
     Obtain forces from a turbomole calculation
     
@@ -172,6 +173,9 @@ def prepare_and_run_turbo(CPDIR, JOB, TITLE, GEO_XYZ, DEF_INP, FORCES_XYZ):
         2) Run Turbomole calculation of nuclear forces
         3) Read Turbomole's output file and create new file with nuclear forces
     """
+
+    global CPDIR
+    CPDIR = CPDIR_IN
 
     # CREATE DIRECTORY WHERE TURBOMOLE WILL RUN
     TBDIR = os.path.join(CPDIR, 'TURBOMOLE')
@@ -232,6 +236,9 @@ def prepare_and_run_turbo(CPDIR, JOB, TITLE, GEO_XYZ, DEF_INP, FORCES_XYZ):
     if JOB in [TDDFT, RICCS, RICC2]:
         energyfile = os.path.join(CPDIR, 'exc_energies')
         get_energies(JOB, TITLE, grad_file, energyfile)
+
+    # get back to CPMD directory
+    os.chdir(CPDIR)
 
 
 if __name__ == '__main__':

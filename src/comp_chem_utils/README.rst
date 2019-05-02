@@ -33,6 +33,11 @@ qmmm_utils
 
 .. automodule:: comp_chem_utils.qmmm_utils
 
+mts_md_turbo
+------------
+
+.. automodule:: comp_chem_utils.mts_md_turbo
+
 periodic
 --------
 

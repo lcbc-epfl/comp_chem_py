@@ -49,6 +49,17 @@ KCALMOL_TO_JOULES = 1.0e3 * CAL_TO_JOULES / const.value('avogadro')
 From the definition of the calorie.
 """
 
+AU_TO_KELVIN = AU_TO_JOULES/const.value('boltzmann')
+"""Conversions from a.u. to Kelvin when calculating kinetic temperature.
+
+For a given kinetic energy in a.u. E_kin, we can obtain the kinetic
+temperature in Kelvin as::
+
+    Temp = 2.0 * E_kin * AU_TO_KELVIN / NDOF,
+
+Where NDOF is the Number of Degrees Of Freedom.
+"""
+
 
 # Time conversion
 AU_TO_S = const.value('dirac') / AU_TO_JOULES
@@ -64,6 +75,9 @@ AU_TO_PS = 1.0e12 * AU_TO_S
 BOHR_TO_ANG = 1.0e10 * const.value('bohrradius')
 """Distance conversion from Bohr (a.u.) to Angstroms."""
 
+# Mass conversions
+ATOMIC_MASS_AU = const.value('amu') / const.value('mass-e')
+"""Atomic mass unit expressed in atomic units."""
 
 # ------------------------------------------------------------------------
 # SPECIFIC TO THE CALCULATION OF ELECTRONIC SPECTRA
