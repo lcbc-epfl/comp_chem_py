@@ -31,6 +31,10 @@ class executable(object):
             # for turbmole executables are job specific
             exe = ''
 
+        elif self.prog==MTS_MD:
+            # In this case the input file is also the executable
+            exe = ''
+
         elif self.prog==CPMD:
 
             if self.version=='ELISA MTS':
@@ -93,6 +97,13 @@ class executable(object):
             env.append( 'export PATH=$TURBODIR/bin/em64t-unknown-linux-gnu_smp:$PATH' )
             env.append( 'export PARNODES=$np' )
 
+        elif self.prog==MTS_MD:
+            env.append('module load anaconda/4.3.1')
+            env.append('SOFT=/home/pbaudin/Work/softwares')
+            env.append('COMP_CHEM_PATH=${SOFT}/comp_chem_py')
+            env.append('export PATH=${COMP_CHEM_PATH}/bin:$PATH')
+            env.append('export PYTHONPATH=${COMP_CHEM_PATH}/external:$PYTHONPATH')
+            env.append('export PYTHONPATH=${COMP_CHEM_PATH}/src:$PYTHONPATH')
 
         elif self.prog==CPMD:
             env.append( "export PP_LIBRARY_PATH='/software/cpmd/PPs/'")
@@ -142,6 +153,9 @@ class executable(object):
         elif self.prog==TURBO:
             exec_line = 'dscf > ${job}.out'
 
+        elif self.prog==MTS_MD:
+            exec_line = 'python ./${job}.py'
+
         elif self.prog==CPMD:
             if self.version=='FIDIS TDMTS':
                 exec_line = 'srun $EXE ${job}.inp > ${job}.out'
@@ -164,11 +178,13 @@ ADF='adf'
 LSDALTON='lsdalton'
 CPMD='cpmd'
 TURBO='turbo'
+MTS_MD='mts_md'
 
 programs = {
         ADF: ['2013.01b',  '2016.101',  '2016.107',  '2017.113'],
         LSDALTON: ['OMP 2018','OMP CPSD','MPI CPSD'],
         TURBO: ['6.5','7.1.1'],
+        MTS_MD: ['1.0'],
         CPMD: [
     'ELISA MTS',
     'PABLO REFERENCE MTS',
