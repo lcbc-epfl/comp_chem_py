@@ -1,12 +1,28 @@
 #!/usr/bin/env python
 """Multiple time step algorithm for Molecular Dynamics with Turbomole.
 
-The following files are required:
-    - a CPMD GEOMETRY file for starting positions and velocities.
-    - at least one input file for the define script of TURBOMOLE.
+Default usage
+-------------
 
-In addition some parameters might need an update.
-See the last line of this file for details.
+The following files are required:
+    - GEOMETRY: a CPMD file for starting positions and velocities.
+    - define_high.inp: Input to TURBOMOLE's define script to set up
+        the high level electronic structure calculations.
+    - define_low.inp: same as define_high.inp but for low level.
+
+From a python script or interpreter::
+
+    # setup the system, the list of atoms needs to be the same as in the GEOMETRY file.
+    system = system_settings(['O','H','H'])
+
+    # Run MD
+    data = md_driver(system)
+
+The output dictionary ``data``, contains the positions, velocities, forces, and energies
+along the MD trajectory.
+
+The MD and TURBOMOLE parameters can be modified by setting the ``md_settings`` and
+``turbo_settings`` objects and passing them to the ``md_driver``.
 """
 
 import sys
@@ -71,6 +87,63 @@ class turbo_settings(object):
         os.environ["PARNODES"] = str(self.nnodes)
         #module('purge')
         #os.environ["PATH"] += os.environ['TURBODIR'] + '/bin/em64t-unknown-linux-gnu_smp'
+
+
+def md_driver(sys_in, md_in=md_settings(), turbo_in=turbo_settings()):
+    """Run a molecular dynamic using the RESPA algorithm of Tuckerman."""
+
+    global system, md_parm, turbo_parm
+    system = sys_in
+    md_parm = md_in
+    turbo_parm = turbo_in
+
+    md_parm.output()
+
+    # PREPARE TURBOMOLE
+    turbo_parm.load()
+
+    nmts = md_parm.mts_factor
+    data = initialization(nmts=nmts)
+
+    # current position and velocities
+    x = data['pos'][-1]
+    v = data['vel'][-1]
+
+    # curent forces
+    f_low = data['f_low'][-1]
+    f_high = data['f_high'][-1]
+    f_tot = f_high * nmts - f_low * (nmts-1)
+
+
+    # START MD LOOP
+    for idx in range(1,md_parm.max_iter):
+
+        # UPDATE VELOCITIES
+        v = vel_update(v,f_tot)
+
+        # UPDATE POSITIONS
+        x = x + v * md_parm.time_step
+
+        # GET NEW FORCES AND ENERGIES
+        if idx%nmts==0:
+            # step index is a multiple of MTS factor
+            # this a "large" step, we compute High level forces
+            f_low, e_low = get_forces_and_energy(x, 'low')
+            f_high, e_high = get_forces_and_energy(x, 'high')
+            f_tot = f_high * nmts - f_low * (nmts-1)
+        else:
+            # Just get low level forces as effective forces
+            f_low, e_low = get_forces_and_energy(x, 'low')
+            f_high, e_high = np.zeros_like(f_low), 0.0
+            f_tot = f_low
+
+        # FINAL VELOCITY UPDATE
+        v = vel_update(v,f_tot)
+
+        # UPDATE DATA WITH CURRENT VALUES
+        data = data_update(data, x, v, f_low, f_high, e_low, e_high, idx, nmts)
+
+    return data
 
 
 
@@ -157,63 +230,6 @@ def get_forces_and_energy(x, level):
     e = read_energy()
 
     return f, e
-
-
-def md_driver(sys_in, md_in=md_settings(), turbo_in=turbo_settings()):
-    """Run a molecular dynamic using the RESPA algorithm of Tuckerman."""
-
-    global system, md_parm, turbo_parm
-    system = sys_in
-    md_parm = md_in
-    turbo_parm = turbo_in
-
-    md_parm.output()
-
-    # PREPARE TURBOMOLE
-    turbo_parm.load()
-
-    nmts = md_parm.mts_factor
-    data = initialization(nmts=nmts)
-
-    # current position and velocities
-    x = data['pos'][-1]
-    v = data['vel'][-1]
-
-    # curent forces
-    f_low = data['f_low'][-1]
-    f_high = data['f_high'][-1]
-    f_tot = f_high * nmts - f_low * (nmts-1)
-
-
-    # START MD LOOP
-    for idx in range(1,md_parm.max_iter):
-
-        # UPDATE VELOCITIES
-        v = vel_update(v,f_tot)
-
-        # UPDATE POSITIONS
-        x = x + v * md_parm.time_step
-
-        # GET NEW FORCES AND ENERGIES
-        if idx%nmts==0:
-            # step index is a multiple of MTS factor
-            # this a "large" step, we compute High level forces
-            f_low, e_low = get_forces_and_energy(x, 'low')
-            f_high, e_high = get_forces_and_energy(x, 'high')
-            f_tot = f_high * nmts - f_low * (nmts-1)
-        else:
-            # Just get low level forces as effective forces
-            f_low, e_low = get_forces_and_energy(x, 'low')
-            f_high, e_high = np.zeros_like(f_low), 0.0
-            f_tot = f_low
-
-        # FINAL VELOCITY UPDATE
-        v = vel_update(v,f_tot)
-
-        # UPDATE DATA WITH CURRENT VALUES
-        data = data_update(data, x, v, f_low, f_high, e_low, e_high, idx, nmts)
-
-    return data
 
 
 
