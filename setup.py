@@ -34,6 +34,7 @@ scripts=[
         'bin/traj2xyz',
         'bin/truncate_solvent',
         'bin/vmd_plot_cube',
+        'bin/read_orbs_info',
     ]
 
 

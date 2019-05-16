@@ -24,3 +24,8 @@ cpmd_spec
 
 .. automodule:: cpmd_scripts.cpmd_spec
 
+read_orbs_info
+--------------
+
+.. automodule:: cpmd_scripts.read_orbs_info
+

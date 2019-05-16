@@ -39,6 +39,12 @@ display projection Orthographic
 display rendermode GLSL
 display depthcue off
 color Display Background white
+#
+# PBC
+#pbc set {13 13 13} -all
+#pbc box
+#pbc wrap -compound residue
+#
 menu graphics on
 mol modstyle 0 0 CPK
 #
@@ -47,12 +53,12 @@ mol addrep 0
 mol addrep 0
 # ------------------------------------------
 # display positive side in blue
-mol modmaterial 1 0 Opaque
+mol modmaterial 1 0 Translucent
 mol modstyle 1 0 Isosurface  0.01 0 0 0 1 1
 mol modcolor 1 0 ColorID 0
 # ------------------------------------------
 # display negative side in red
-mol modmaterial 2 0 Opaque
+mol modmaterial 2 0 Translucent
 mol modstyle 2 0 Isosurface -0.01 0 0 0 1 1
 mol modcolor 2 0 ColorID 1
 # ------------------------------------------
