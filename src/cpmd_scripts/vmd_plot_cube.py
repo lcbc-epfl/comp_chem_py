@@ -118,11 +118,11 @@ if __name__=="__main__":
 
     # ----------------------------------------------------------------
     # ASK THE USER WHAT TO DO
-    job = '' #raw_input("""
-#    GENERATE SCRIPT AND SHOW COMMANDS : 1 [default]
-#
-#    DISPLAY CUBE FILES IN VMD DIRECTLY: 2
-#    """)
+    job = raw_input("""
+    GENERATE SCRIPT AND SHOW COMMANDS : 1 [default]
+
+    DISPLAY CUBE FILES IN VMD DIRECTLY: 2
+    """)
 
     if job=='2':
 
