@@ -25,7 +25,7 @@ script_name= '{}/submit_job.sh'.format(script_dir)
 
 def print_input(verbose=False):
     for key, arg in args.items():
-        print arg.output(verbose=verbose)
+        print( arg.output(verbose=verbose))
 
 def read_command_line():
     """Read the submission line and split the arguments.
@@ -74,18 +74,18 @@ def read_command_line():
 
 
 def show_usage():
-    print "Usage: {} [-h] [--avail] [--inp] [-f input_file] [args**]\n".format(os.path.basename(__file__))
+    print("Usage: {} [-h] [--avail] [--inp] [-f input_file] [args**]\n".format(os.path.basename(__file__)))
 
-    print description
+    print(description)
 
-    print "\nOptional argunents:"
-    print "  -h, --help     Show this help message and exit"
-    print "  --avail        List available programs and exit"
-    print "  --inp          Print short input file and exit"
-    print "  --INP          Print commented input file and exit"
-    print "  -f INPUT       Use INPUT as input file to read arguments"
-    print "  args**         list of arguments written as shown below:"
-    print "                 KEY=VALUE or KEY VALUE"
+    print("\nOptional argunents:")
+    print("  -h, --help     Show this help message and exit")
+    print("  --avail        List available programs and exit")
+    print("  --inp          Print short input file and exit")
+    print("  --INP          Print commented input file and exit")
+    print("  -f INPUT       Use INPUT as input file to read arguments")
+    print("  args**         list of arguments written as shown below:")
+    print("                 KEY=VALUE or KEY VALUE")
     sys.exit()
 
 class argument(object):
@@ -214,7 +214,7 @@ def read_input():
             partition = args['partition'].read_line(lst)
 
     except Exception as e:
-        print e
+        print(e)
         show_usage()
 
 
@@ -224,11 +224,11 @@ def check_input():
     global PRG,SCR,BSH
 
     if not PRG:
-        print """Compulsory keywords PRG not found in input file"""
+        print("""Compulsory keywords PRG not found in input file""")
         show_usage()
 
     if not JOB:
-        print """Compulsory keywords JOB not found in input file"""
+        print("""Compulsory keywords JOB not found in input file""")
         show_usage()
 
     if not SCR:
@@ -248,26 +248,26 @@ def check_input():
 def print_param():
     """Print out input parameters to terminal"""
 
-    print "BASH SCRIPT PARAMETERS:\n"
+    print("BASH SCRIPT PARAMETERS:\n")
 
-    print "{:<26}: {}\n".format("Name of bash script", BSH)
+    print("{:<26}: {}\n".format("Name of bash script", BSH))
 
-    print "{:<26}: {}/{}".format("Programme used", PRG.prog, PRG.version)
-    print "{:<26}: {}".format("Jobname", JOB)
-    print "{:<26}: {}".format("Working directory", WRK)
-    print "{:<26}: {}\n".format("Scratch directory", SCR)
+    print("{:<26}: {}/{}".format("Programme used", PRG.prog, PRG.version))
+    print("{:<26}: {}".format("Jobname", JOB))
+    print("{:<26}: {}".format("Working directory", WRK))
+    print("{:<26}: {}\n".format("Scratch directory", SCR))
 
-    print "{:<26}: {}".format("Files copied to scratch", INP)
-    print "{:<26}: {}\n".format("Files copied from scratch", OUT)
+    print("{:<26}: {}".format("Files copied to scratch", INP))
+    print("{:<26}: {}\n".format("Files copied from scratch", OUT))
 
-    print "{:<26}: {}".format("Exectute bash script", not NOX)
-    print "{:<26}: {}".format("Output printings", not NOV)
-    print "{:<26}: {}".format("Send e-mail", MAIL)
-    print "{:<26}: {}".format("Running on SLURM", SLUR)
+    print("{:<26}: {}".format("Exectute bash script", not NOX))
+    print("{:<26}: {}".format("Output printings", not NOV))
+    print("{:<26}: {}".format("Send e-mail", MAIL))
+    print("{:<26}: {}".format("Running on SLURM", SLUR))
     if SLUR:
-        print "   {:<23}: {}".format("Number of nodes", nodes)
-        print "   {:<23}: {}".format("Time limit", time)
-        print "   {:<23}: {}".format("Partition", partition)
+        print("   {:<23}: {}".format("Number of nodes", nodes))
+        print("   {:<23}: {}".format("Time limit", time))
+        print("   {:<23}: {}".format("Partition", partition))
 
 
 def create_submission_script():
@@ -347,8 +347,8 @@ if __name__ == "__main__":
        sbatch = 'nohup {0} > {1}.stdo 2> {1}.stde &'.format(BSH, JOB)
 
     if verbose:
-        print '\nSubmission line:'
-        print sbatch
+        print('\nSubmission line:')
+        print(sbatch)
 
     # write script to disk
     with open(BSH,'w') as script:
