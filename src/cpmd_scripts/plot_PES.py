@@ -58,14 +58,13 @@ if __name__ == '__main__':
        energy_files = sys.argv[2:]
        
        # READ TIME INFO
-       TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH = get_time_info(cpmd_inp)
+       TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR = get_time_info(cpmd_inp)
        print """
        TIMESTEP: {} [a.u.]
        MAXSTEP: {}
-       USE_MTS: {}
+       USE MTS: {}
        MTS FACTOR: {}
-       MTS TSH LEVEL: {}
-       """.format(TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH)
+       """.format(TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR)
        
        data = {}
        
@@ -119,7 +118,7 @@ if __name__ == '__main__':
            
                nstates = get_nstates()
            
-               if USE_MTS and MTS_TSH == 'HIGH':
+               if USE_MTS:
                    data['SH_ENERG'] = read_SH_ENERG(energies, nstates, MTS_FACTOR) 
                else:
                    data['SH_ENERG'] = read_SH_ENERG(energies, nstates) 
