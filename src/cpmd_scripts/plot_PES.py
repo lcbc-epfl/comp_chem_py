@@ -11,14 +11,16 @@ import sys
 import os.path
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 from comp_chem_utils.cpmd_utils import read_ENERGIES, get_time_info, read_SH_ENERG, read_MTS_EXC_ENERG
 from comp_chem_utils.conversions import AU_TO_FS
 
+sns.set()
 
 def get_nstates():
     try:
-        nstates = int(raw_input("\nNumber of states to read (empty=all):\n"))
+        nstates = int(input("\nNumber of states to read (empty=all):\n"))
     except(ValueError):
         nstates = None
 
@@ -59,35 +61,35 @@ if __name__ == '__main__':
        
        # READ TIME INFO
        TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH = get_time_info(cpmd_inp)
-       print """
+       print("""
        TIMESTEP: {} [a.u.]
        MAXSTEP: {}
        USE_MTS: {}
        MTS FACTOR: {}
        MTS TSH LEVEL: {}
-       """.format(TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH)
+       """.format(TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH) )
        
        data = {}
        
        # check for energy files in folder
-       print """
+       print("""
        Looking for files with energy data:
             ENERGIES
             SH_ENERG.dat
             MTS_EXC_ENERG.dat
-       """
+       """)
        
        energy_files = []
        if os.path.isfile(folder+'ENERGIES'):
-           if raw_input('Use ENERGIES file? [y/n]\n').strip().lower() == 'y':
+           if input('Use ENERGIES file? [y/n]\n').strip().lower() == 'y':
                energy_files.append(folder+'ENERGIES')
        
        if os.path.isfile(folder+'SH_ENERG.dat'):
-           if raw_input('Use SH_ENERG.dat file? [y/n]\n').strip().lower() == 'y':
+           if input('Use SH_ENERG.dat file? [y/n]\n').strip().lower() == 'y':
                energy_files.append(folder+'SH_ENERG.dat')
        
        if os.path.isfile(folder+'MTS_EXC_ENERG.dat'):
-           if raw_input('Use MTS_EXC_ENERG.dat file? [y/n]\n').strip().lower() == 'y':
+           if input('Use MTS_EXC_ENERG.dat file? [y/n]\n').strip().lower() == 'y':
                energy_files.append(folder+'MTS_EXC_ENERG.dat')
            
        if not energy_files:
@@ -106,7 +108,7 @@ if __name__ == '__main__':
                print("   RMS:     Nuclear displacement wrt initial position (?)")
                print("   CPU_t:   CPU time")
                e_codes = ['steps']
-               e_codes.extend( raw_input("").split() )
+               e_codes.extend( input("").split() )
            
 
                data['ENERGIES'] = read_ENERGIES(energies, e_codes, MTS_FACTOR, HIGH=True)
@@ -132,7 +134,7 @@ if __name__ == '__main__':
                if not USE_MTS:
                    sys.exit('Incoherent input: read MTS_EXC_ENERG.dat and not USE_MTS!!')
            
-               read_high = raw_input("\nRead MTS high level energies? [y/n]\n").strip().lower() == 'y'
+               read_high = input("\nRead MTS high level energies? [y/n]\n").strip().lower() == 'y'
                if read_high:
                    nstates = get_nstates()
            
@@ -142,7 +144,7 @@ if __name__ == '__main__':
                    data['HIGH_MTS_EXC_ENERG']['time_step'] = TIMESTEP
            
            
-               read_low  = raw_input("\nRead MTS low level energies? [y/n] \n").strip().lower() == 'y'
+               read_low  = input("\nRead MTS low level energies? [y/n] \n").strip().lower() == 'y'
                if read_low:
                    nstates = get_nstates()
                    data['LOW_MTS_EXC_ENERG'] = read_MTS_EXC_ENERG(energies, nstates, MTS_FACTOR, HIGH=False)
@@ -193,7 +195,7 @@ if __name__ == '__main__':
    
    
    plt.xlabel('Time [fs]')
-   #plt.ylabel('Energy [a.u.]')
+   plt.ylabel('Energy [a.u.]')
    plt.legend()
    plt.show()
 
