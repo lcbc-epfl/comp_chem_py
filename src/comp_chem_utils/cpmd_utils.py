@@ -410,7 +410,7 @@ def read_ENERGIES(fn, code, factor=1, HIGH=True):
     return to_return
 
 
-def read_SH_ENERG(fn, nstates, factor=1):
+def read_SH_ENERG(fn, nstates=None, factor=1):
     """Read SH_ENERG.dat file and exctract info in dictionary"""
     steps, info = read_standard_file(fn)
 
@@ -425,9 +425,9 @@ def read_SH_ENERG(fn, nstates, factor=1):
         nstates = maxstates
 
     for i in range(nstates):
-        sh_data[ 'E State {}'.format(i) ] = info[:,i]
+        sh_data[ 'State {}'.format(i) ] = info[:,i]
 
-    sh_data[ 'E Driving' ] = info[:,-1]
+    sh_data[ 'Driving State' ] = info[:,-1]
     return sh_data
 
 
@@ -476,7 +476,6 @@ def get_time_info(fn):
     MAXSTEP = 10000
     USE_MTS = False
     MTS_FACTOR = 1
-    MTS_TSH = 'HIGH'
 
     # read input file
     lines = get_file_as_list(fn)
@@ -487,17 +486,12 @@ def get_time_info(fn):
             TIMESTEP = float(lines[j+1].split()[0])
         elif 'MAXSTEP' in line:
             MAXSTEP = int(lines[j+1].split()[0])
-        elif 'USE_MTS' in line:
+        elif 'BOMD_FORCES MTS' in line:
             USE_MTS = True
         elif 'TIMESTEP_FACTOR' in line:
             MTS_FACTOR = int(lines[j+1].split()[0])
-        elif 'TSH' in line:
-            if 'HIGH' in line:
-                MTS_TSH = 'HIGH'
-            elif 'LOW' in line:
-                MTS_TSH = 'LOW'
 
-    return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR, MTS_TSH
+    return TIMESTEP, MAXSTEP, USE_MTS, MTS_FACTOR
 
 def get_natoms(lines):
     """Get the number of atoms from a file like TRAJECTORY."""
