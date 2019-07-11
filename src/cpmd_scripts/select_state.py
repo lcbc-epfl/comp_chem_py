@@ -20,17 +20,16 @@ if __name__ == '__main__':
 
     verbose = False
     
-    name = 'OUT_{0:02d}_tddft_pbe0_10x/{0:02d}_tddft_pbe0_10x.out'
-    name = 'OUT_{0:02d}_tddft_pbe_10x/{0:02d}_tddft_pbe_10x.out'
+    name = 'OUT_{0:02d}_tddft_pbe0_5x/{0:02d}_tddft_pbe0_5x.out'
     n = 1 # int(raw_input('\nSize of sample:\n'))
-    nstate = 6
+    nstate = 5
     
     full = []
     # get oscillator strength from cpmd 
-    for idx in range(50):
+    for idx in range(100):
     #for fn in sys.argv[1:]:
     
-        fn = name.format( idx+1 )
+        fn = name.format( idx )
         f = read_spectrum(fn, 'cpmd', verbose)[1]
         f = f[0:nstate]
         #nstate = len(f)
@@ -40,14 +39,14 @@ if __name__ == '__main__':
         p = [x/tot for x in f]
         
         if verbose:
-            print "State transition probability:"
+            print("State transition probability:")
             for i,(j,k) in enumerate(zip(f,p)):
-                print ' {:4d}  {:10.5f}  {:4.2f} '.format(i+1,j,k)
+                print(' {:4d}  {:10.5f}  {:4.2f} '.format(i+1,j,k))
         
         
         states = [x+1 for x in choice(nstate, n, p=p)]
         
-        print '{}: state = {}'.format(fn, states[0])
+        print('{}: state = {}'.format(fn, states[0]))
         full.extend(states)
     
         # checking
@@ -55,7 +54,7 @@ if __name__ == '__main__':
         #for i in range(nstate):
         #    print '   {:4d}    {:4.2f}'.format(i+1, states.count(i+1)/float(n) )
     
-    print ' '.join(map(str, full))
-    print ''
+    print(' '.join(map(str, full)))
+    print()
     for i in range(nstate):
-        print '   {:4d}    {:4.2f}'.format(i+1, full.count(i+1)/float(len(full)) )
+        print('   {:4d}    {:4.2f}'.format(i+1, full.count(i+1)/float(len(full)) ))
