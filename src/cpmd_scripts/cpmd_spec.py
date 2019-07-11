@@ -41,7 +41,7 @@ if __name__=="__main__":
     #   - PLOT A STICK SPECTRUM
     #lab=['2.62', '2.66', '2.70','2.74','2.78']
     #lab=['Vacuum 2.62 AA','Vacuum 2.70 AA','Original QM, 3 eth.', 'New QM, closest eth.']
-    #lab=['Vacuum 2.70 AA','snapshot 1', 'snapshot 2', 'snapshot 3']
+    #lab=['Vacuum 2.697 $\\AA$','Vacuum 2.797 $\\AA$', '09050 all', '09050 I$_2$ only']
     for i,(e,f) in enumerate(zip(exc, osc)):
         x, y = sp.plot_spectrum(e,f,plot=False)
         tmp = plt.plot(x, y, label=flist[i])
@@ -54,6 +54,8 @@ if __name__=="__main__":
     # SET UP THE PLOT AND SHOW IT
     plt.ylabel('Cross section [$\\AA^2 \\cdot $ molecules$^{-1}$]')
     plt.xlabel('Transition energy [eV]')
+    #plt.ylim([-0.01,0.05])
+    #plt.xlim([0.5,4.0])
     plt.legend()
     plt.show()
 

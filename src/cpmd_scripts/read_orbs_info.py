@@ -2,7 +2,7 @@
 """
 Read CPMD TDDFT output file and extract informations about the orbitals involved in the electronic transitions.
 
-A CPMD input string is printed which will enable to generate grid files to plot all the 
+A CPMD input string is printed which will enable to generate grid files to plot all the
 orbital involved in the electronic transitions.
 """
 
@@ -13,23 +13,23 @@ def get_orbital_energies(lines):
     eocc = []
     evir = []
     for i,line in enumerate(lines):
-    
+
         # READ ORBITAL ENERGIES
         if 'EIGENVALUES(EV) AND OCCUPATION' in line:
 
             idx = i + 1
             myl = lines[idx].split()
             while 'CHEMICAL' not in myl:
-            
+
                 # read first orbital energy in the line
                 if int(float(myl[2])) == 2.0:
                     eocc.append(float(myl[1]))
                 elif int(float(myl[2])) == 0.0:
                     evir.append(float(myl[1]))
-                    
+
                 # check for second orbital energy
                 if len(myl) == 6:
-                
+
                     # read second orbital energy in the line
                     if int(float(myl[-1])) == 2.0:
                         eocc.append(float(myl[-2]))
@@ -40,19 +40,19 @@ def get_orbital_energies(lines):
                 myl = lines[idx].split()
 
     return eocc, evir
-    
+
 
 def get_transition_orbitals(lines):
     homo = []
     lumo = []
     for i,line in enumerate(lines):
-    
+
         # READ ORBITALS INVOLVED IN TRANSITIONS
         if all((word in line for word in ['TRANSITION', 'HOMO', 'LUMO'])):
             homo.append( int(line.split()[-5]) )
             lumo.append( int(line.split()[-1]) )
-            
-            
+
+
     # convert list of orbitals involved in transitions to indices
     homo = list(set(homo))
     homo.sort(reverse=True)
@@ -60,11 +60,19 @@ def get_transition_orbitals(lines):
     lumo.sort()
     return homo, lumo
 
+error = """
+Please provide a CPMD TDDFT output file as argument:
+
+python read_orbs_info.py cpmd_tddft.out"""
+
 if __name__=="__main__":
 
     # read CPMD output file
-    cp = get_file_as_list(sys.argv[1])
-    
+    try:
+        cp = get_file_as_list(sys.argv[1])
+    except:
+        sys.exit(error)
+
     eocc, evir = get_orbital_energies(cp)
 
     # homo and lumo contain a list of indices of the orbital involved in the electronic transisions
@@ -83,8 +91,8 @@ if __name__=="__main__":
         str_orb += '-{} '.format( nocc - orb )
     for orb in lumo:
         str_orb += '-{} '.format( nocc + 1 + orb )
-        
-        
+
+
     print("""
     RESTART WAVEFUNCTION COORDINATES LINRES LATEST
     KOHN-SHAM ENERGIES

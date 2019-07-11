@@ -362,8 +362,8 @@ def read_ENERGIES(fn, code, factor=1, HIGH=True):
                 'RMS'   : Nuclear displacement wrt initial position (?)
                 'CPU_t' : CPU time
 
-        factor (int): Integer factor used to skip some information. E.g. for 
-            an MTS calculation the high level information can be extracted by 
+        factor (int): Integer factor used to skip some information. E.g. for
+            an MTS calculation the high level information can be extracted by
             setting factor equals to the MTS factor used in the calculation.
             Default value is 1 (every time step info is extracted).
 
@@ -560,7 +560,7 @@ def qmmm_cpmd_atoms(atom_types, PPs=None):
 
 def xyz_data_to_np(xyz_data):
     """Convert xyz_data information to a tuple (atoms, coord)
-    
+
     Where atoms is a list of the atomic symbols and coord is
     a matrix: np.array[natoms, 3]"""
 
