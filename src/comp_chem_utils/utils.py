@@ -232,7 +232,7 @@ def get_rmsd(xyz_data1, xyz_data2):
         vector = d2 - d1
         rmsd += np.dot(vector, vector)
 
-    rmsd = rmsd/(len(coord1))
+    rmsd = rmsd/(len(xyz_data1))
     return np.sqrt(rmsd)
 
 
